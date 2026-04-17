@@ -59,7 +59,7 @@ test:
   username: postgres
 
   # The password associated with the PostgreSQL role (username).
-  password: <%= ENV.fetch("POSTGRES_PASSWORD", "postgres") %>
+  password: newpassword
 
   # Connect on a TCP socket using IPv4
   host: 127.0.0.1
