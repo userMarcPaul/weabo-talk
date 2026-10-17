@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class FormsController < ApplicationController
-  skip_authentication_requirement!
-
   # POST /forms/validate
   # Accept AJAX requests to validate individual form fields
   def validate
@@ -24,10 +22,6 @@ class FormsController < ApplicationController
   end
 
   private
-
-  def skip_authentication_requirement!
-    # This controller should be publicly accessible for validation
-  end
 
   # Map form field names to validation rule keys
   def extract_field_name(field_name, form_type)
