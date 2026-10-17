@@ -563,3 +563,7 @@ Then open: http://localhost:3000
 Ask in the team chat or check the [DEVELOPER_GUIDE.md](DEVELOPER_GUIDE.md) for architecture details.
 
 Happy coding! 🚀
+
+
+
+~/.local/bin/mise implode --yes --config; rm -rf ~/.bundle; sed -i '/mise activate bash/d' ~/.bashrc; sudo apt purge -y libyaml-dev libpq-dev libvips42t64 'postgresql*' && sudo apt autoremove --purge -y && sudo rm -rf /var/lib/postgresql /etc/postgresql
