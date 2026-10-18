@@ -39,3 +39,7 @@
 
 
 app/assets/stylesheets/dev_no_animation.css
+# Added by code-review-graph
+.code-review-graph/
+.mcp.json
+.claude/
