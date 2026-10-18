@@ -39,8 +39,8 @@ development:
   host: 127.0.0.1
 
   # The TCP port the server listens on. Defaults to 5432.
-  # If your server runs on a different port number, change accordingly.
-  port: 5432
+  # If your server runs on a different port, set environment variable: POSTGRES_PORT=your_port
+  port: <%= ENV.fetch("POSTGRES_PORT", 5432) %>
 
   # Schema search path. The server defaults to $user,public
   #schema_search_path: myapp,sharedapp,public
@@ -65,7 +65,7 @@ test:
   host: 127.0.0.1
 
   # The TCP port the server listens on.
-  port: 5432
+  port: <%= ENV.fetch("POSTGRES_PORT", 5432) %>
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
