@@ -13,8 +13,7 @@ module Users
     def search
       return [] if @query.blank? || @query.length < MIN_QUERY_LENGTH
 
-      profiles = search_by_keyword
-      profiles.limit(MAX_RESULTS)
+      @results ||= sort_by_relevance(search_by_keyword).first(MAX_RESULTS)
     end
 
     def search_with_details
@@ -34,41 +33,38 @@ module Users
 
     # Search both username and bio for keyword matching (basic keyword search)
     def search_by_keyword
-      search_term = "%#{@query}%"
+      # Escape % and _ so they match literally instead of acting as wildcards
+      search_term = "%#{Profile.sanitize_sql_like(@query)}%"
 
       Profile
         .where("username ILIKE ? OR bio ILIKE ?", search_term, search_term)
-        .includes(:user)
-        .sort_by_relevance(@query)
+        .includes(:user, avatar_attachment: :blob)
     end
 
     # Sort results by relevance
-    def sort_by_relevance(query)
-      # Fetch all results and sort in Ruby for simplicity
-      profiles = Profile
-        .where("username ILIKE ? OR bio ILIKE ?", "%#{query}%", "%#{query}%")
-        .includes(:user)
-        .to_a
-
+    def sort_by_relevance(profiles)
+      # Sort in Ruby for simplicity
       # Sort: exact username match first → username contains → bio contains
       profiles.sort_by do |profile|
-        case profile.username.downcase
-        when query.downcase
+        rank = case profile.username.downcase
+        when @query.downcase
           0  # Exact match (highest priority)
-        when /^#{Regexp.escape(query)}/i
+        when /^#{Regexp.escape(@query)}/i
           1  # Starts with query
-        when /#{Regexp.escape(query)}/i
+        when /#{Regexp.escape(@query)}/i
           2  # Contains query in username
         else
           3  # Only bio contains query
         end
+
+        # Username as tie-breaker keeps the order stable
+        [ rank, profile.username ]
       end
     end
 
+    # Relative path, so no host configuration is needed
     def generate_avatar_url(profile)
-      Rails.application.routes.url_helpers.url_for(profile.avatar)
-    rescue StandardError
-      nil
+      Rails.application.routes.url_helpers.rails_blob_path(profile.avatar, only_path: true)
     end
   end
 end
