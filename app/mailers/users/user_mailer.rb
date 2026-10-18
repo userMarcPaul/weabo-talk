@@ -37,16 +37,16 @@ class Users::UserMailer < ApplicationMailer
     )
   end
 
-  def reset_password_url(user, token:)
+  def reset_password_url(user, reset_password_token:)
     Rails.application.routes.url_helpers.edit_user_password_url(
-      reset_password_token: token,
+      reset_password_token: reset_password_token,
       host: ENV["APP_HOST"] || "localhost:3000"
     )
   end
 
-  def unlock_url(user, token:)
+  def unlock_url(user, unlock_token:)
     Rails.application.routes.url_helpers.user_unlock_url(
-      unlock_token: token,
+      unlock_token: unlock_token,
       host: ENV["APP_HOST"] || "localhost:3000"
     )
   end
