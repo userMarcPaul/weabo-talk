@@ -1,6 +1,8 @@
 require "test_helper"
 
 class UserTest < ActiveSupport::TestCase
+  include ActionMailer::TestHelper
+
   # Test Setup
   setup do
     @user = User.create!(
@@ -102,7 +104,7 @@ class UserTest < ActiveSupport::TestCase
     )
 
     # This should enqueue the email
-    assert_difference "ActionMailer::Base.deliveries.size", 1 do
+    assert_enqueued_emails 1 do
       user.send_devise_notification(:confirmation_instructions)
     end
   end
