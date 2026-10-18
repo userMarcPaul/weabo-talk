@@ -21,7 +21,7 @@ class Users::UserMailer < ApplicationMailer
     mail(to: user.email, subject: "Reset your WeaboTalk password")
   end
 
-  def unlock_instructions(user, token)
+  def unlock_instructions(user, token, _opts = {})
     @user = user
     @unlock_url = unlock_url(user, unlock_token: token)
 
