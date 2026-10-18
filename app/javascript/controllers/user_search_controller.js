@@ -119,6 +119,8 @@ export default class extends Controller {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          // Without this, fetch sends Accept: */* and Rails responds with the HTML page
+          "Accept": "application/json",
           "X-CSRF-Token": this.getCsrfToken()
         },
         body: JSON.stringify({ q: query })

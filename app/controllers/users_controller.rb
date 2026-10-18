@@ -19,10 +19,11 @@ class UsersController < ApplicationController
       end
     end
   rescue StandardError => e
+    # Only the real-time search expects a JSON error; HTML falls back to the normal error page
+    raise unless request.format.json?
+
     Rails.logger.error("Search error: #{e.message}\n#{e.backtrace.join("\n")}")
-    respond_to do |format|
-      format.json { render json: { error: "Search failed", users: [] }, status: :internal_server_error }
-    end
+    render json: { error: "Search failed", users: [] }, status: :internal_server_error
   end
 
   # GET /users/:id
