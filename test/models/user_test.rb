@@ -127,4 +127,47 @@ class UserTest < ActiveSupport::TestCase
     # Email should be stripped by devise
     assert_equal "spaced@example.com", user.email
   end
+
+  # Profile Creation
+  test "should create profile for email with dots and plus sign" do
+    user = User.create!(
+      email: "john.doe+anime@example.com",
+      password: "password123",
+      password_confirmation: "password123"
+    )
+    assert_equal "john_doe_anime", user.profile.username
+  end
+
+  test "should create profile with valid username for short email" do
+    user = User.create!(
+      email: "ab@example.com",
+      password: "password123",
+      password_confirmation: "password123"
+    )
+    assert_equal "user_ab", user.profile.username
+  end
+
+  test "should create profile with username within 30 characters for long email" do
+    user = User.create!(
+      email: "#{"a" * 40}@example.com",
+      password: "password123",
+      password_confirmation: "password123"
+    )
+    assert_operator user.profile.username.length, :<=, 30
+  end
+
+  test "should create unique username when one is already taken" do
+    first = User.create!(
+      email: "john.doe@example.com",
+      password: "password123",
+      password_confirmation: "password123"
+    )
+    second = User.create!(
+      email: "john.doe@another.com",
+      password: "password123",
+      password_confirmation: "password123"
+    )
+    assert_not_equal first.profile.username, second.profile.username
+    assert second.profile.valid?
+  end
 end

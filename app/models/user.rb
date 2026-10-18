@@ -38,11 +38,20 @@ class User < ApplicationRecord
   end
 
   def create_profile
-    # Extract username from email (before @)
-    username = email.split("@").first.downcase
+    Profile.create!(user: self, username: generate_username)
+  end
+
+  # Build a username from the email (before @) that passes Profile validations:
+  # letters, numbers and underscores only, 3-30 characters, unique
+  def generate_username
+    # Leave room for a 4-digit suffix within the 30 character limit
+    base = email.split("@").first.downcase.gsub(/[^a-z0-9_]+/, "_")[0, 26]
+    base = "user_#{base}" if base.length < 3
+
+    username = base
     # Ensure uniqueness by appending random suffix if needed
-    username = "#{username}#{rand(1000..9999)}" if Profile.exists?(username: username)
-    Profile.create!(user: self, username: username)
+    username = "#{base}#{rand(1000..9999)}" while Profile.exists?(username: username)
+    username
   end
 
   # Validations
