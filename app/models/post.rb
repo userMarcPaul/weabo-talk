@@ -21,4 +21,6 @@ class Post < ApplicationRecord
   scope :by_user, ->(user_id) { where(user_id: user_id) }
   scope :published_only, -> { where(status: :published) }
   scope :draft_only, -> { where(status: :draft) }
+  # Published posts, plus the user's own drafts
+  scope :visible_to, ->(user) { published_only.or(where(user: user)) }
 end

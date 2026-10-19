@@ -92,7 +92,7 @@ class PostsController < ApplicationController
 
   # GET /posts/:id
   def show
-    @post = Post.includes(:user, :post_images, comments: :user, likes: :user, reactions: :user).find(params[:id])
+    @post = Post.visible_to(current_user).includes(:user, :post_images, comments: :user, likes: :user, reactions: :user).find(params[:id])
     @comments = @post.comments.root_comments.includes(replies: :user, user: :profile)
     @comment = Comment.new
     @is_author = current_user&.id == @post.user_id

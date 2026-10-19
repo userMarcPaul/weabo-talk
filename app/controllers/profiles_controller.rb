@@ -9,8 +9,9 @@ class ProfilesController < ApplicationController
   def show
     @user = @profile.user
     @is_own_profile = current_user&.profile == @profile
-    @posts = @user.posts.recent.includes(:user, :post_images, :comments, :likes, :reactions)
-    @posts_count = @user.posts.count
+    # Drafts stay on the owner's "My Drafts" page
+    @posts = @user.posts.published_only.recent.includes(:user, :post_images, :comments, :likes, :reactions)
+    @posts_count = @user.posts.published_only.count
     @friends_count = @user.friends.count
   end
 

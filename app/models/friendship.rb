@@ -16,6 +16,8 @@ class Friendship < ApplicationRecord
   scope :pending, -> { where(status: "pending") }
   scope :accepted, -> { where(status: "accepted") }
   scope :blocked, -> { where(status: "blocked") }
+  # Friendships the user sent or received
+  scope :involving, ->(user) { where(user: user).or(where(friend: user)) }
 
   after_create :notify_friend_request
   after_destroy :cleanup_notifications, :destroy_reverse_friendship

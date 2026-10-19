@@ -1,5 +1,3 @@
-<turbo-stream action="update" target="friendship-button-<%= @friendship.id %>">
-  <template>
-    <%= render "friendships/friend_button", user: @friendship.friend %>
-  </template>
-</turbo-stream>
+<%= turbo_stream.update "friendship-button-#{@friendship.id}" do %>
+  <%= render "friendships/friend_button", user: @other_user %>
+<% end %>
