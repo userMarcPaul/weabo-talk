@@ -53,9 +53,6 @@ gem "pundit", "~> 2.3", ">= 2.3.1"
 # Pagination
 gem "pagy", "~> 7.0"
 
-# For background jobs (notifications)
-gem "sidekiq"
-
 # View Components for modular, reusable UI components
 gem "view_component", "~> 3.0"
 

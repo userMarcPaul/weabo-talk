@@ -74,7 +74,7 @@ WeaboTalk is a full-featured social media platform built with **Ruby on Rails 8.
 | **PostgreSQL**   | Primary database     |
 | **Devise**       | Authentication       |
 | **Pundit**       | Authorization        |
-| **Sidekiq**      | Background jobs      |
+| **Active Job**   | Background jobs      |
 | **Action Cable** | Real-time WebSocket  |
 
 ### Frontend
@@ -93,7 +93,6 @@ WeaboTalk is a full-featured social media platform built with **Ruby on Rails 8.
 gem "devise"                    # Authentication
 gem "pundit", "~> 2.3"          # Authorization
 gem "pagy", "~> 7.0"            # Pagination
-gem "sidekiq"                   # Background jobs
 gem "image_processing", "~> 1.2" # Image processing
 gem "view_component", "~> 3.0"  # View components
 gem "tailwindcss-rails"         # Tailwind integration
@@ -112,7 +111,7 @@ gem "stimulus-rails"            # Hotwire Stimulus
 - PostgreSQL 13+
 - Node.js 18+
 - Bundler
-- Redis (for Action Cable/Sidekiq)
+- Redis (for Action Cable in production)
 
 ### Installation
 
@@ -140,9 +139,6 @@ rails db:migrate
 ```bash
 # Terminal 1: Start Rails + webpack
 ./bin/dev
-
-# Terminal 2 (optional): Start Sidekiq for background jobs
-bundle exec sidekiq
 
 # Visit the app
 open http://localhost:3000
@@ -237,7 +233,7 @@ end
 
 - WebSocket connection for live updates
 - Notifications broadcast instantly
-- Works alongside Sidekiq for async processing
+- Broadcasts render in background jobs (Active Job)
 
 ### Stimulus Controllers
 
@@ -439,7 +435,6 @@ rails db:drop db:create db:migrate
 - [ ] Redis instance running
 - [ ] Environment variables set
 - [ ] SSL certificates installed
-- [ ] Sidekiq deployed
 - [ ] Assets precompiled
 
 ### Deploy with Kamal
