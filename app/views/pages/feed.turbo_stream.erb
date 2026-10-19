@@ -1,0 +1,2 @@
+<%= turbo_stream.append "posts-feed", partial: "posts/post", collection: @posts, as: :post %>
+<%= turbo_stream.replace "load-more", partial: "pages/load_more", locals: { pagy: @pagy } %>

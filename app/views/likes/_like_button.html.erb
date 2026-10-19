@@ -1,9 +1,10 @@
-<% user_liked = current_user && post.likes.exists?(user: current_user) %>
-<div id="<%= dom_id(post, :like)%>">
+<%# Uses the loaded likes, so the feed doesn't query per post %>
+<% like = current_user && post.likes.find { |l| l.user_id == current_user.id } %>
+<div id="<%= dom_id(post, :like) %>">
 <% if user_signed_in? %>
-  <% if user_liked %>
+  <% if like %>
     <%= button_to "❤️ Unlike", 
-      post_like_path(post, post.likes.find_by(user: current_user)), 
+      post_like_path(post, like), 
       method: :delete,
       data: { turbo_stream: true },
       class: "flex-1 py-2 text-center rounded-lg hover:bg-rose-900/30 text-rose-400 transition font-semibold text-sm bg-transparent border-0 cursor-pointer" %>
@@ -14,7 +15,7 @@
     data: { turbo_stream: true},
     class: "flex-1 py-2 text-center rounded-lg hover:bg-slate-700/50 text-slate-300 transition font-semibold text-sm bg-transparent border-0 cursor-pointer" %>
   <% end %>
-  </div>
 <% else %>
-  <%= link_to "🤍 Like", user_session_path, class: "flex-1 py-2 text-center rounded-lg hover:bg-slate-700/50 text-slate-300 transition font-semibold text-sm" %>
+  <%= link_to "🤍 Like", user_session_path, data: { turbo_frame: "_top" }, class: "flex-1 py-2 text-center rounded-lg hover:bg-slate-700/50 text-slate-300 transition font-semibold text-sm" %>
 <% end %>
+</div>

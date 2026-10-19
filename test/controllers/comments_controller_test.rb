@@ -44,6 +44,38 @@ class CommentsControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "prevented your comment from being saved"
   end
 
+  test "reply to a comment on another post should be rejected" do
+    other_post = @user.posts.create!(title: "Other anime", content: "Dandadan")
+    other_comment = other_post.comments.create!(user: @user, content: "On the other post")
+    sign_in @user
+
+    assert_no_difference "Comment.count" do
+      post post_comments_path(@post), params: { comment: { content: "Sneaky", parent_comment_id: other_comment.id } }
+    end
+    assert_includes flash[:alert], "Parent comment must be on the same post"
+  end
+
+  # Display
+  test "comment HTML should be shown as text, with URLs still linked" do
+    @post.comments.create!(user: @user, content: %(<img src="https://evil.example/x.png"> see https://example.com/a?b=1&c=2))
+    sign_in @user
+
+    get post_path(@post)
+
+    assert_select "img[src='https://evil.example/x.png']", count: 0
+    assert_includes response.body, "&lt;img"
+    assert_select "a[href=?][target=_blank]", "https://example.com/a?b=1&c=2"
+  end
+
+  test "delete comment should ask for confirmation" do
+    comment = @post.comments.create!(user: @user, content: "Mine")
+    sign_in @user
+
+    get post_path(@post)
+
+    assert_select "form[action=?][data-turbo-confirm]", post_comment_path(@post, comment)
+  end
+
   # HTML Fallback
   test "invalid comment without turbo should redirect to the post with an error" do
     sign_in @user

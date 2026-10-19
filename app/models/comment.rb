@@ -10,6 +10,7 @@ class Comment < ApplicationRecord
   validates :user_id, presence: true
   validates :post_id, presence: true
   validates :content, presence: true, length: { minimum: 1, maximum: 1000 }
+  validate :parent_comment_on_same_post
 
   scope :root_comments, -> { where(parent_comment_id: nil) }
   scope :recent, -> { order(created_at: :desc) }
@@ -19,6 +20,13 @@ class Comment < ApplicationRecord
   after_destroy :cleanup_notifications
 
   private
+
+  # A reply must belong to the same post as the comment it answers
+  def parent_comment_on_same_post
+    return unless parent_comment && parent_comment.post_id != post_id
+
+    errors.add(:parent_comment, "must be on the same post")
+  end
 
   # Enqueue a background job to notify the post author about this comment.
   # Keeping the model callback, but delegating side-effects to a job/service

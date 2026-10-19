@@ -1,4 +1,4 @@
-<div data-controller="post-form post-form-validation" data-validation-url="<%= validate_form_path %>">
+<div data-controller="post-form post-form-validation" data-post-form-validation-validation-url-value="<%= validate_form_path %>">
   <% # New posts and drafts go through save_draft (Save / Publish); published posts are updated in place %>
   <% editing_published = @post.persisted? && @post.published? %>
 
@@ -54,12 +54,12 @@
     <div class="flex gap-3 pt-4">
       <% if @post.persisted? && @post.draft? %>
         <!-- Editing existing draft: Save or Publish -->
-        <%= form.submit "Save Changes", name: "action_type", value: "save", "data-post-form-validation-target": "submitButton", class: "px-6 py-2 bg-green-400 hover:bg-green-500 disabled:opacity-60 disabled:cursor-not-allowed text-white rounded-lg transition font-semibold" %>
-        <%= form.submit "Publish", name: "action_type", value: "publish", "data-post-form-validation-target": "submitButton", class: "px-6 py-2 bg-gradient-to-r from-green-600 to-emerald-600 disabled:opacity-60 disabled:cursor-not-allowed text-white rounded-lg hover:shadow-lg hover:shadow-green-500/50 transition font-semibold" %>
+        <%= form.button "Save Changes", type: "submit", name: "action_type", value: "save", "data-post-form-validation-target": "submitButton", class: "px-6 py-2 bg-green-400 hover:bg-green-500 disabled:opacity-60 disabled:cursor-not-allowed text-white rounded-lg transition font-semibold" %>
+        <%= form.button "Publish", type: "submit", name: "action_type", value: "publish", "data-post-form-validation-target": "submitButton", class: "px-6 py-2 bg-gradient-to-r from-green-600 to-emerald-600 disabled:opacity-60 disabled:cursor-not-allowed text-white rounded-lg hover:shadow-lg hover:shadow-green-500/50 transition font-semibold" %>
       <% elsif @post.new_record? %>
         <!-- Creating new post: Publish or Save as Draft -->
-        <%= form.submit "Publish", name: "action_type", value: "publish", "data-post-form-validation-target": "submitButton", class: "px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 disabled:opacity-60 disabled:cursor-not-allowed text-white rounded-lg hover:shadow-lg hover:shadow-purple-500/50 transition font-semibold" %>
-        <%= form.submit "Save", name: "action_type", value: "save", "data-post-form-validation-target": "submitButton", class: "px-6 py-2 bg-green-400 hover:bg-green-500 disabled:opacity-60 disabled:cursor-not-allowed text-white rounded-lg transition font-semibold" %>
+        <%= form.button "Publish", type: "submit", name: "action_type", value: "publish", "data-post-form-validation-target": "submitButton", class: "px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 disabled:opacity-60 disabled:cursor-not-allowed text-white rounded-lg hover:shadow-lg hover:shadow-purple-500/50 transition font-semibold" %>
+        <%= form.button "Save", type: "submit", name: "action_type", value: "save", "data-post-form-validation-target": "submitButton", class: "px-6 py-2 bg-green-400 hover:bg-green-500 disabled:opacity-60 disabled:cursor-not-allowed text-white rounded-lg transition font-semibold" %>
       <% else %>
         <!-- Editing a published post -->
         <%= form.submit "Save Changes", "data-post-form-validation-target": "submitButton", class: "px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 disabled:opacity-60 disabled:cursor-not-allowed text-white rounded-lg hover:shadow-lg hover:shadow-purple-500/50 transition font-semibold" %>

@@ -15,14 +15,14 @@
         <span><%= time_ago_in_words(comment.created_at) %> ago</span>
         <button class="text-slate-400 hover:text-slate-300 transition" data-action="click->comment-form#toggleReplyForm" data-comment-id="<%= comment.id %>">Reply</button>
         <% if current_user&.id == comment.user_id %>
-          <%= button_to "Delete", post_comment_path(post, comment), method: :delete, local: true, data: { confirm: "Delete this comment?" }, class: "text-rose-400 hover:text-rose-300 transition bg-transparent border-0 p-0 cursor-pointer" %>
+          <%= button_to "Delete", post_comment_path(post, comment), method: :delete, form: { data: { turbo_confirm: "Delete this comment?" } }, class: "text-rose-400 hover:text-rose-300 transition bg-transparent border-0 p-0 cursor-pointer" %>
         <% end %>
       </div>
 
       <!-- Reply Form (Hidden by default) -->
       <div id="reply-form-<%= comment.id %>" class="mt-3 hidden">
         <% if user_signed_in? %>
-          <%= form_with(model: [post, Comment.new], local: true, html: { data: { controller: "form-validation", validation_url: validate_form_path, validation_type: "comment" } }, class: "space-y-2") do |form| %>
+          <%= form_with(model: [post, Comment.new], local: true, html: { data: { controller: "form-validation", form_validation_validation_url_value: validate_form_path, validation_type: "comment" } }, class: "space-y-2") do |form| %>
             <%= form.hidden_field :parent_comment_id, value: comment.id %>
             <div class="flex gap-2">
               <%= form.text_area :content, rows: 2, placeholder: "Write a reply...", class: "flex-1 bg-slate-700/50 border border-slate-600/50 rounded-lg px-3 py-2 text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm" %>

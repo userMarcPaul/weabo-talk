@@ -238,7 +238,7 @@ export default class extends Controller {
 
       case "error":
         field.classList.add("border-rose-500", "focus:ring-rose-500", "bg-rose-900/20")
-        this.showFieldFeedback(fieldName, this.validationState[fieldName].errors[0], "error")
+        this.showFieldFeedback(fieldName, this.validationState[fieldName].errors[0] || "Couldn't check this field. Try again.", "error")
         break
 
       case "pending":
@@ -380,9 +380,14 @@ export default class extends Controller {
     // Check if at least one field has content
     const hasContent = this.getTitleValue().length > 0 || this.getContentValue().length > 0
 
-    this.submitButtonTarget.disabled = !isFormValid || !hasContent
-    this.submitButtonTarget.style.opacity = this.submitButtonTarget.disabled ? "0.6" : "1"
-    this.submitButtonTarget.style.cursor = this.submitButtonTarget.disabled ? "not-allowed" : "pointer"
+    const disabled = !isFormValid || !hasContent
+
+    // The form can have several submit buttons (e.g. Save and Publish)
+    this.submitButtonTargets.forEach((button) => {
+      button.disabled = disabled
+      button.style.opacity = disabled ? "0.6" : "1"
+      button.style.cursor = disabled ? "not-allowed" : "pointer"
+    })
   }
 
   /**

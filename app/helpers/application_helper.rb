@@ -2,14 +2,16 @@ module ApplicationHelper
   include Pagy::Frontend
 
   def link_to_user_mentions(text)
-    # Simple text with URL linking support
-    # Convert URLs to links if present
-    if text.include?("http")
-      # Simple regex to find URLs and convert them to links
-      text = text.gsub(/https?:\/\/\S+/) { |url| %(<a href="#{url}" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:text-purple-300 underline">#{url}</a>) }
+    # Escape the text first, so users can't add their own HTML (images, fake links, ...)
+    escaped = ERB::Util.html_escape(text.to_s).to_str
+
+    # Then turn plain URLs into links (link_to escapes the URL again)
+    linked = escaped.gsub(%r{https?://[^\s<]+}) do |url|
+      url = CGI.unescapeHTML(url)
+      link_to(url, url, target: "_blank", rel: "noopener noreferrer", class: "text-purple-400 hover:text-purple-300 underline")
     end
 
-    # Escape remaining text and convert newlines to breaks
-    simple_format(text.html_safe)
+    # Convert newlines to breaks; the text is already escaped
+    simple_format(linked.html_safe, {}, sanitize: false)
   end
 end
