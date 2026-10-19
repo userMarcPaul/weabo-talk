@@ -36,6 +36,9 @@
 # Ignore backup copies (e.g. of encrypted credentials)
 *.bak
 
+# JavaScript packages are installed with `npm install` (they differ per OS, e.g. esbuild)
+/node_modules
+
 
 /app/assets/builds/*
 !/app/assets/builds/.keep
