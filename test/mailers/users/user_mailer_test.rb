@@ -22,7 +22,24 @@ class Users::UserMailerTest < ActionMailer::TestCase
     assert_includes html_body(email), "/users/confirmation?confirmation_token=confirm-token-123"
   end
 
+  # Production Links
+  test "links should use APP_HOST and APP_PROTOCOL" do
+    with_env("APP_HOST" => "weabotalk.onrender.com", "APP_PROTOCOL" => "https") do
+      email = Users::UserMailer.reset_password_instructions(@user, "reset-token-123")
+
+      assert_includes html_body(email), "https://weabotalk.onrender.com/users/password/edit?reset_password_token=reset-token-123"
+    end
+  end
+
   private
+
+  def with_env(values)
+    original = values.keys.index_with { |key| ENV[key] }
+    values.each { |key, value| ENV[key] = value }
+    yield
+  ensure
+    original.each { |key, value| ENV[key] = value }
+  end
 
   # Decoded HTML body, whether the email is multipart (HTML + text) or HTML only
   def html_body(email)

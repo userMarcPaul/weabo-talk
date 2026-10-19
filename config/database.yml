@@ -93,21 +93,10 @@ test:
 # Read https://guides.rubyonrails.org/configuring.html#configuring-a-database
 # for a full overview on how database connection configuration can be specified.
 #
+# Production uses a single Supabase Postgres database (see DOCUMENTS/DEPLOYMENT.md).
+# Use Supabase's "Session pooler" connection string: it works over IPv4 and supports
+# prepared statements. With the "Transaction pooler" (port 6543), set DB_PREPARED_STATEMENTS=false.
 production:
-  primary: &primary_production
-    <<: *default
-    database: weabo_talk_production
-    username: weabo_talk
-    password: <%= ENV["WEABO_TALK_DATABASE_PASSWORD"] %>
-  cache:
-    <<: *primary_production
-    database: weabo_talk_production_cache
-    migrations_paths: db/cache_migrate
-  queue:
-    <<: *primary_production
-    database: weabo_talk_production_queue
-    migrations_paths: db/queue_migrate
-  cable:
-    <<: *primary_production
-    database: weabo_talk_production_cable
-    migrations_paths: db/cable_migrate
+  <<: *default
+  url: <%= ENV["DATABASE_URL"] %>
+  prepared_statements: <%= ENV.fetch("DB_PREPARED_STATEMENTS", "true") %>
