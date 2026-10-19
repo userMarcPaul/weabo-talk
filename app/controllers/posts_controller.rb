@@ -85,7 +85,7 @@ class PostsController < ApplicationController
         format.html { redirect_to home_path, notice: "Post published successfully." }
       else
         format.json { render json: { status: "error", errors: result[:errors] }, status: :unprocessable_entity }
-        format.html { redirect_to drafts_path, alert: result[:errors].join(", ") }
+        format.html { redirect_to drafts_posts_path, alert: result[:errors].join(", ") }
       end
     end
   end

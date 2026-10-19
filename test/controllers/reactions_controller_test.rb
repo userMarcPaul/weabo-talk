@@ -29,6 +29,15 @@ class ReactionsControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
+  # HTML Fallback
+  test "reacting without turbo should redirect to the post" do
+    sign_in @owner
+
+    post post_reactions_path(@post), params: { reaction: { reaction_type: "😂" } }
+
+    assert_redirected_to post_path(@post)
+  end
+
   private
 
   def create_user(email)

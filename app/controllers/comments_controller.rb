@@ -19,7 +19,7 @@ class CommentsController < ApplicationController
     else
       respond_to do |format|
         format.turbo_stream { render :form_error, status: :unprocessable_entity }
-        format.html { render :new, status: :unprocessable_entity }
+        format.html { redirect_to post_path(@post), alert: @comment.errors.full_messages.join(", ") }
       end
     end
   end
