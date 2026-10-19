@@ -16,7 +16,8 @@
       </div>
 
       <!-- Form -->
-      <%= form_with model: @profile, url: profile_path(@profile.username), local: true, method: :patch, html: { data: { controller: "form-validation", validation_url: validate_form_path, validation_type: "profile" } }, class: "space-y-8" do |form| %>
+      <%# username_in_database: after a failed rename, the URLs still use the saved username %>
+      <%= form_with model: @profile, url: profile_path(@profile.username_in_database), local: true, method: :patch, html: { data: { controller: "form-validation", form_validation_validation_url_value: validate_form_path, validation_type: "profile" } }, class: "space-y-8" do |form| %>
         <!-- Error Messages -->
         <% if @profile.errors.any? %>
           <div class="bg-red-950/50 border-l-4 border-red-500 backdrop-blur p-5 rounded-r-lg">
@@ -123,7 +124,7 @@
         <div class="flex gap-4 pt-6">
           <%= form.submit "Save Changes", 
               class: "px-6 py-3 bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold rounded-lg transition duration-300 shadow-lg hover:shadow-purple-500/50 transform hover:scale-105" %>
-          <%= link_to "Cancel", profile_path(@profile.username), 
+          <%= link_to "Cancel", profile_path(@profile.username_in_database), 
               class: "px-6 py-3 bg-slate-700/50 hover:bg-slate-700 text-slate-200 font-semibold rounded-lg transition duration-300 backdrop-blur" %>
         </div>
       <% end %>

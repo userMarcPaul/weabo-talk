@@ -17,9 +17,12 @@ module Users
 
     private
 
+    # Only after a correct password, so the sign-in form doesn't reveal which emails
+    # have unconfirmed accounts. find_for_authentication applies Devise's email
+    # normalization (case, whitespace).
     def check_unconfirmed_account
-      user = User.find_by(email: sign_in_params[:email])
-      if user&.persisted? && !user&.confirmed?
+      user = User.find_for_authentication(email: sign_in_params[:email])
+      if user && !user.confirmed? && user.valid_password?(sign_in_params[:password])
         flash.alert = "⚠️ Please confirm your email first. Check your inbox for the confirmation email, or click below to resend it."
         redirect_to new_user_confirmation_path(email: user.email)
       end

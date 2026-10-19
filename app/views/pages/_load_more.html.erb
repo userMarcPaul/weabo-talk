@@ -1,0 +1,6 @@
+<%# Loads the next page of the feed (pages/feed.turbo_stream appends it and replaces this button) %>
+<div id="load-more" class="text-center py-8">
+  <% if pagy&.next %>
+    <%= link_to "Load More Posts", home_feed_path(page: pagy.next), data: { turbo_stream: true }, class: "inline-block px-8 py-3 bg-slate-800/50 border border-slate-700/50 hover:border-purple-500/50 text-slate-300 hover:text-purple-300 font-semibold rounded-lg transition duration-300 backdrop-blur" %>
+  <% end %>
+</div>

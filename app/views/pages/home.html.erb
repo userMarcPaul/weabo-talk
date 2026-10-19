@@ -39,11 +39,7 @@
         <!-- Original dummy posts below (for reference, can be removed) -->
      
         <!-- Load More Section -->
-        <div class="text-center py-8">
-          <button class="px-8 py-3 bg-slate-800/50 border border-slate-700/50 hover:border-purple-500/50 text-slate-300 hover:text-purple-300 font-semibold rounded-lg transition duration-300 backdrop-blur">
-            Load More Posts
-          </button>
-        </div>
+        <%= render "pages/load_more", pagy: @pagy %>
       </div>
 
       <!-- Footer Spacing -->

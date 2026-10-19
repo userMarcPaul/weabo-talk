@@ -12,7 +12,8 @@
     <div class="space-y-6">
       <% if @drafts.any? %>
         <% @drafts.each do |draft| %>
-          <div class="bg-slate-800/50 backdrop-blur-md border border-slate-700/50 rounded-xl p-6">
+          <%# The id lets posts/destroy.turbo_stream remove the card %>
+          <div id="<%= dom_id(draft) %>" class="bg-slate-800/50 backdrop-blur-md border border-slate-700/50 rounded-xl p-6">
             <!-- Draft Header -->
             <div class="flex items-start justify-between mb-4">
               <div>
@@ -26,7 +27,7 @@
               </div>
               <div class="flex gap-2">
                 <%= link_to "Edit", edit_post_path(draft), class: "px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold text-sm" %>
-                <%= button_to "Delete", post_path(draft), method: :delete, data: { confirm: "Are you sure?" }, class: "px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-semibold text-sm" %>
+                <%= button_to "Delete", post_path(draft), method: :delete, form: { data: { turbo_confirm: "Delete this draft?" } }, class: "px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-semibold text-sm" %>
               </div>
             </div>
 

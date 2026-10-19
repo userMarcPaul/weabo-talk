@@ -1,7 +1,7 @@
 <!-- Add Comment Form (also re-rendered by comments/create and form_error turbo streams) -->
 <div class="bg-slate-800/50 backdrop-blur-md border border-slate-700/50 rounded-xl p-6 mb-8" id="comment-form-<%= post.id %>">
   <h3 class="font-semibold text-slate-200 mb-4">Add a Comment</h3>
-  <%= form_with(model: [post, comment], local: true, html: { data: { controller: "form-validation", validation_url: validate_form_path, validation_type: "comment" } }, class: "space-y-4") do |form| %>
+  <%= form_with(model: [post, comment], local: true, html: { data: { controller: "form-validation", form_validation_validation_url_value: validate_form_path, validation_type: "comment" } }, class: "space-y-4") do |form| %>
     <% if comment.errors.any? %>
       <div class="bg-rose-900/50 border border-rose-500/50 rounded-lg p-3">
         <p class="text-sm text-rose-100"><%= pluralize(comment.errors.count, "error") %> prevented your comment from being saved.</p>

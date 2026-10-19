@@ -20,6 +20,7 @@ Rails.application.routes.draw do
 
   # Pages
   get "home", to: "pages#home"
+  get "home/feed", to: "pages#feed", as: :home_feed
 
   # User Profiles
   get "/profiles/:username", to: "profiles#show", as: :profile

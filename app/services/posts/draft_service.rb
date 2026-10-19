@@ -13,11 +13,13 @@ module Posts
     def save_draft(draft_params)
       draft_id = draft_params.delete(:id)
 
-      post = if draft_id.present?
-               @user.posts.draft.find_by(id: draft_id)
+      if draft_id.present?
+        # Only the user's own drafts can be updated (not published posts or other users' posts)
+        post = @user.posts.draft.find_by(id: draft_id)
+        return { success: false, post: nil, errors: [ "Draft not found" ] } unless post
+      else
+        post = @user.posts.build
       end
-
-      post ||= @user.posts.build
 
       if post.update(draft_params.merge(status: :draft))
         { success: true, post: post, errors: [] }

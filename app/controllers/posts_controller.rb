@@ -70,7 +70,15 @@ class PostsController < ApplicationController
         format.html { redirect_to success_redirect, notice: success_message }
       else
         format.json { render json: { status: "error", errors: result[:errors] }, status: :unprocessable_entity }
-        format.html { redirect_to failure_redirect, alert: result[:errors].join(", ") }
+        format.html do
+          if result[:post]
+            # Show the form again with the errors, so the user's edits aren't lost
+            @post = result[:post]
+            render(@post.persisted? ? :edit : :new, status: :unprocessable_entity)
+          else
+            redirect_to failure_redirect, alert: result[:errors].join(", ")
+          end
+        end
       end
     end
   end
@@ -138,11 +146,23 @@ class PostsController < ApplicationController
 def destroy
   @post.destroy
   respond_to do |format|
-    format.turbo_stream # removes via Turbo
+    format.turbo_stream do
+      # Deleted from its own page: there is nothing left to show, so go to the feed
+      if deleted_from_post_page?
+        redirect_to home_path, notice: "Post was successfully deleted.", status: :see_other
+      end
+      # Otherwise destroy.turbo_stream.erb removes the post from the list
+    end
     format.html { redirect_to posts_url, notice: "Post was successfully deleted." } # fallback
   end
 end
   private
+
+  def deleted_from_post_page?
+    request.referer.present? && URI(request.referer).path == post_path(@post)
+  rescue URI::InvalidURIError
+    false
+  end
 
   def set_post
     @post = Post.find(params[:id])

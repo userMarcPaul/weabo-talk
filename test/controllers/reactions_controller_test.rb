@@ -29,6 +29,23 @@ class ReactionsControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
+  # Picker
+  test "picker should only offer reactions the model accepts" do
+    sign_in @owner
+
+    get post_path(@post)
+
+    offered = css_select("input[name='reaction[reaction_type]']").map { |input| input["value"] }
+    assert_equal Reaction::ALLOWED_REACTIONS, offered
+  end
+
+  test "signed out users should get a react link that leaves the frame" do
+    get post_path(@post)
+
+    assert_select "a[href=?][data-turbo-frame=_top]", user_session_path, text: "😊 React"
+    assert_select "a[href=?][data-turbo-frame=_top]", user_session_path, text: "🤍 Like"
+  end
+
   # HTML Fallback
   test "reacting without turbo should redirect to the post" do
     sign_in @owner

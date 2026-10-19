@@ -51,7 +51,8 @@ export default class extends Controller {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content
+          // The meta tag is missing when forgery protection is off (e.g. in tests)
+          "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]')?.content || ""
         },
         body: JSON.stringify({
           field: fieldName,
