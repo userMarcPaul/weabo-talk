@@ -16,8 +16,9 @@ export default class extends Controller {
    */
   addImage() {
     const container = this.containerTarget
-    const newIndex = Math.floor(Math.random() * 10000)
-    
+    // Unique index for the nested attributes (Rails only needs it to be unique per request)
+    const newIndex = Date.now()
+
     const fieldHTML = `
       <div class="flex gap-3 items-end image-wrapper">
         <div class="flex-1">
@@ -25,8 +26,7 @@ export default class extends Controller {
             type="file" 
             accept="image/*" 
             name="post[post_images_attributes][${newIndex}][image]" 
-            class="w-full bg-slate-800/50 border border-slate-600/50 rounded-lg px-3 py-2 text-slate-100 file:mr-4 file:py-2 file:px-3 file:rounded file:border-0 file:bg-purple-600 file:text-white file:font-semibold file:cursor-pointer hover:file:bg-purple-700 transition" 
-            required
+            class="w-full bg-slate-800/50 border border-slate-600/50 rounded-lg px-3 py-2 text-slate-100 file:mr-4 file:py-2 file:px-3 file:rounded file:border-0 file:bg-purple-600 file:text-white file:font-semibold file:cursor-pointer hover:file:bg-purple-700 transition"
           />
         </div>
         <button 
@@ -46,12 +46,19 @@ export default class extends Controller {
   }
 
   /**
-   * Remove an image field from the form
+   * Remove an image field from the form.
+   * Saved images are marked for deletion (_destroy) and hidden; new fields are removed.
    */
   removeImage(event) {
     event.preventDefault()
     const wrapper = event.target.closest('.image-wrapper')
-    if (wrapper) {
+    if (!wrapper) return
+
+    const destroyField = wrapper.querySelector('input[name$="[_destroy]"]')
+    if (destroyField) {
+      destroyField.value = "1"
+      wrapper.classList.add('hidden')
+    } else {
       wrapper.remove()
     }
   }

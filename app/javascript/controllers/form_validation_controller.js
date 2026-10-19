@@ -1,5 +1,8 @@
 import { Controller } from "@hotwired/stimulus"
 
+// Inputs that have no validation rules (e.g. the hidden CSRF token, submit buttons)
+const SKIPPED_TYPES = ["hidden", "submit", "button", "file", "checkbox", "radio"]
+
 export default class extends Controller {
   static targets = ["input", "feedback"]
   static values = {
@@ -9,7 +12,7 @@ export default class extends Controller {
   connect() {
     // Attach validation handlers to input-like elements
     this.element.querySelectorAll("input, textarea, select").forEach((field) => {
-      if (!field.classList.contains("no-validation")) {
+      if (!field.classList.contains("no-validation") && !SKIPPED_TYPES.includes(field.type)) {
         field.addEventListener("blur", () => this.validateField(field))
         field.addEventListener("input", () => this.debounceValidation(field))
         
@@ -53,6 +56,8 @@ export default class extends Controller {
         body: JSON.stringify({
           field: fieldName,
           value: value,
+          // Needed to check password confirmation against the password field
+          password: formElement?.querySelector('input[name$="[password]"]')?.value,
           form_type: formElement?.dataset.validationType || "generic"
         })
       })

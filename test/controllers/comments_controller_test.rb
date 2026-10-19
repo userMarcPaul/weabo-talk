@@ -8,6 +8,42 @@ class CommentsControllerTest < ActionDispatch::IntegrationTest
     @post = @user.posts.create!(title: "Best anime", content: "Frieren")
   end
 
+  # Turbo Streams (same Accept header Turbo sends from the browser)
+  TURBO = { "Accept" => "text/vnd.turbo-stream.html, text/html, application/xhtml+xml" }.freeze
+
+  test "comment with turbo should be added to the comment list and reset the form" do
+    sign_in @user
+
+    post post_comments_path(@post), params: { comment: { content: "Great pick" } }, headers: TURBO
+
+    assert_response :success
+    assert_select "turbo-stream[action=prepend][target=?]", "comments-#{@post.id}"
+    assert_select "turbo-stream[action=replace][target=?]", "comment-form-#{@post.id}"
+    assert_select "turbo-stream[action=remove][target=?]", "no-comments-#{@post.id}"
+    assert_includes response.body, "Great pick"
+  end
+
+  test "reply with turbo should be added under its parent comment" do
+    parent = @post.comments.create!(user: @user, content: "First!")
+    sign_in @user
+
+    post post_comments_path(@post), params: { comment: { content: "Agreed", parent_comment_id: parent.id } }, headers: TURBO
+
+    assert_response :success
+    assert_select "turbo-stream[action=append][target=?]", "replies-#{parent.id}"
+    assert_select "turbo-stream[target=?]", "comments-#{@post.id}", count: 0
+  end
+
+  test "invalid comment with turbo should show the error in the form" do
+    sign_in @user
+
+    post post_comments_path(@post), params: { comment: { content: "" } }, headers: TURBO
+
+    assert_response :unprocessable_entity
+    assert_select "turbo-stream[action=replace][target=?]", "comment-form-#{@post.id}"
+    assert_includes response.body, "prevented your comment from being saved"
+  end
+
   # HTML Fallback
   test "invalid comment without turbo should redirect to the post with an error" do
     sign_in @user

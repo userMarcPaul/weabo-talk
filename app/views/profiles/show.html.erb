@@ -52,18 +52,8 @@
                 <%= link_to "Edit Profile", edit_profile_path(@profile.username), 
                     class: "px-6 py-3 bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold rounded-lg transition duration-300 shadow-lg hover:shadow-purple-500/50 transform hover:scale-105 whitespace-nowrap h-fit" %>
               <% else %>
-                <!-- Add Friend Button (for other profiles) -->
-                <% friendship = current_user&.friendships&.find_by(friend_id: @user.id) %>
-                <% if current_user && current_user.id != @user.id %>
-                  <% if friendship&.status == "accepted" %>
-                    <button class="px-6 py-3 bg-green-600/50 text-green-300 font-bold rounded-lg cursor-default whitespace-nowrap h-fit" disabled>✓ Friends</button>
-                  <% elsif friendship&.status == "pending" %>
-                    <button class="px-6 py-3 bg-yellow-600/50 text-yellow-300 font-bold rounded-lg cursor-default whitespace-nowrap h-fit" disabled>⏳ Pending</button>
-                  <% else %>
-                    <%= button_to "Add Friend", friendships_path(friend_id: @user.id), method: :post, 
-                        class: "px-6 py-3 bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold rounded-lg transition duration-300 shadow-lg hover:shadow-purple-500/50 transform hover:scale-105 whitespace-nowrap" %>
-                  <% end %>
-                <% end %>
+                <!-- Friend Button (for other profiles): Add Friend, Request Sent, Accept/Decline, or Friends/Unfriend -->
+                <%= render "friendships/friend_button", user: @user %>
               <% end %>
             </div>
 

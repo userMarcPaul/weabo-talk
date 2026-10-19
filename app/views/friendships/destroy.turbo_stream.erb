@@ -1,3 +1,3 @@
-<%= turbo_stream.update "friendship-button-#{@friendship.id}" do %>
-  <%= render "friendships/friend_button", user: @other_user %>
-<% end %>
+<%= turbo_stream.replace dom_id(@other_user, :friend_button), partial: "friendships/friend_button", locals: { user: @other_user } %>
+<%# On the friends list, remove the friend's row %>
+<%= turbo_stream.remove dom_id(@other_user, :friend_item) %>

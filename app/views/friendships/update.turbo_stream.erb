@@ -1,3 +1,1 @@
-<%= turbo_stream.update "friendship-button-#{@friendship.id}" do %>
-  <%= render "friendships/friend_button", user: @friendship.user %>
-<% end %>
+<%= turbo_stream.replace dom_id(@other_user, :friend_button), partial: "friendships/friend_button", locals: { user: @other_user } %>

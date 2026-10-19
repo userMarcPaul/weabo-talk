@@ -2,15 +2,8 @@
   <% friendship = current_user.active_friendships.find_by(friend: user) %>
   <% pending_request = current_user.passive_friendships.find_by(user: user, status: "pending") %>
 
-  <% wrapper_id = if friendship
-                    "friendship-button-#{friendship.id}"
-                  elsif pending_request
-                    "friendship-button-#{pending_request.id}"
-                  end %>
-
-  <% if wrapper_id %>
-    <div id="<%= wrapper_id %>">
-  <% end %>
+  <%# Keyed by the other user, so the friendship turbo streams can replace it on any page %>
+  <div id="<%= dom_id(user, :friend_button) %>" class="flex gap-2">
 
   <% if friendship %>
     <% if friendship.accepted? %>
@@ -30,7 +23,5 @@
     <% end %>
   <% end %>
 
-  <% if wrapper_id %>
-    </div>
-  <% end %>
+  </div>
 <% end %>

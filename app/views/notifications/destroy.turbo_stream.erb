@@ -1,2 +1,2 @@
-<turbo-stream action="remove" target="<%= dom_id(@notification) %>">
-</turbo-stream>
+<%= turbo_stream.remove @notification %>
+<%= turbo_stream.replace "notifications-badge", partial: "notifications/badge", locals: { user: current_user } %>

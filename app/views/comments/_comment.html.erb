@@ -34,12 +34,6 @@
     </div>
   </div>
 
-  <!-- Replies -->
-  <% if comment.replies.any? %>
-    <div class="ml-12 mt-3 space-y-3 border-l-2 border-slate-700/30 pl-3">
-      <% comment.replies.each do |reply| %>
-        <%= render "comments/comment", comment: reply, post: post %>
-      <% end %>
-    </div>
-  <% end %>
+  <!-- Replies (always present so new replies can be streamed in; hidden while empty) -->
+  <div id="replies-<%= comment.id %>" class="ml-12 mt-3 space-y-3 border-l-2 border-slate-700/30 pl-3 empty:hidden"><% comment.replies.each do |reply| %><%= render "comments/comment", comment: reply, post: post %><% end %></div>
 </div>

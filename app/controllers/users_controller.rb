@@ -27,7 +27,8 @@ class UsersController < ApplicationController
   end
 
   # GET /users/:id
+  # Profiles live at /profiles/:username; this route has no page of its own
   def show
-    @user = User.find(params[:id])
+    redirect_to profile_path(User.find(params[:id]).profile.username)
   end
 end
