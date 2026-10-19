@@ -38,6 +38,18 @@ class FriendshipsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to profile_path(@receiver.profile.username)
   end
 
+  # Accept
+  test "accepting with turbo stream should show friends button" do
+    sign_in @receiver
+
+    # Same Accept header Turbo sends from the browser
+    patch friendship_path(@friendship), headers: { "Accept" => "text/vnd.turbo-stream.html, text/html, application/xhtml+xml" }
+
+    assert_response :success
+    assert_includes response.body, "✓ Friends"
+    assert_equal "accepted", @friendship.reload.status
+  end
+
   test "other users should not be able to delete a friendship" do
     sign_in create_user("stranger@example.com")
 
