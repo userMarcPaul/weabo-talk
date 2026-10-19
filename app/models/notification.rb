@@ -21,6 +21,8 @@ class Notification < ApplicationRecord
   scope :read, -> { where.not(read_at: nil) }
   scope :recent, -> { order(created_at: :desc) }
 
+  after_create_commit :broadcast_to_recipient
+
   def marked_as_read?
     read_at.present?
   end
@@ -37,5 +39,16 @@ class Notification < ApplicationRecord
     def unread_count_for_user(user)
       user.notifications.unread.count
     end
+  end
+
+  private
+
+  # Push the notification and the unread badge to the recipient's open pages
+  # (streamed by turbo_stream_from in the navbar)
+  def broadcast_to_recipient
+    broadcast_prepend_later_to [ user, :notifications ], target: "notifications-list",
+                               partial: "notifications/notification", locals: { notification: self }
+    broadcast_replace_later_to [ user, :notifications ], target: "notifications-badge",
+                               partial: "notifications/badge", locals: { user: user }
   end
 end

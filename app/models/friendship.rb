@@ -48,11 +48,6 @@ class Friendship < ApplicationRecord
       notification_type: "friend_request_sent",
       notifiable: self
     )
-
-    NotificationsChannel.broadcast_to(
-      friend,
-      { type: "friend_request", user_id: user.id }
-    )
   end
 
   def notify_acceptance
@@ -60,11 +55,6 @@ class Friendship < ApplicationRecord
       user: user,
       notification_type: "friend_request_accepted",
       notifiable: self
-    )
-
-    NotificationsChannel.broadcast_to(
-      user,
-      { type: "friend_request_accepted", friend_id: friend.id }
     )
   end
 

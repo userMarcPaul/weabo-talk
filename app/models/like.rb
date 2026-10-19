@@ -22,11 +22,6 @@ class Like < ApplicationRecord
       notification_type: "like_created",
       notifiable: self
     )
-
-    NotificationsChannel.broadcast_to(
-      post.user,
-      { type: "like", post_id: post.id, user_id: user.id }
-    )
   end
 
   def cleanup_notifications
