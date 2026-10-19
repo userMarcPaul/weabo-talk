@@ -14,7 +14,8 @@ class Comment < ApplicationRecord
   scope :root_comments, -> { where(parent_comment_id: nil) }
   scope :recent, -> { order(created_at: :desc) }
 
-  after_create :enqueue_notify_post_author
+  # After commit, so the job can find the comment
+  after_create_commit :enqueue_notify_post_author
   after_destroy :cleanup_notifications
 
   private

@@ -31,10 +31,10 @@
           <% end %>
           <%= link_to notifications_path, class: "px-3 py-2 text-slate-300 hover:text-purple-400 transition font-semibold text-sm relative" do %>
             Notifications
-            <% if current_user.notifications.unread.any? %>
-              <span class="absolute top-1 right-0 w-2 h-2 bg-rose-500 rounded-full"></span>
-            <% end %>
+            <%= render "notifications/badge", user: current_user %>
           <% end %>
+          <%# Real-time notifications (see Notification#broadcast_to_recipient) %>
+          <%= turbo_stream_from current_user, :notifications %>
         </div>
 
         <!-- User Dropdown Menu -->

@@ -26,11 +26,6 @@ class Reaction < ApplicationRecord
       notification_type: "reaction_created",
       notifiable: self
     )
-
-    NotificationsChannel.broadcast_to(
-      post.user,
-      { type: "reaction", post_id: post.id, user_id: user.id, reaction_type: reaction_type }
-    )
   end
 
   def cleanup_notifications
