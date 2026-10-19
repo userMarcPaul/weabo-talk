@@ -12,10 +12,10 @@ module Forms
         { type: :email_format, message: "Please enter a valid email address" },
         { type: :min_length, value: 5, message: "Email must be at least 5 characters" }
       ],
+      # Matches the User model (Devise): only a minimum length is required
       password: [
         { type: :presence, message: "Password is required" },
-        { type: :min_length, value: 8, message: "Password must be at least 8 characters" },
-        { type: :password_strength, message: "Password must contain letters, numbers, and special characters" }
+        { type: :min_length, value: 8, message: "Password must be at least 8 characters" }
       ],
       password_confirmation: [
         { type: :presence, message: "Password confirmation is required" },
@@ -81,8 +81,6 @@ module Forms
         rule[:message] if value.present? && value.to_s.length > rule[:value]
       when :email_format
         rule[:message] if value.present? && !email_valid?(value)
-      when :password_strength
-        rule[:message] if value.present? && !password_strong?(value)
       when :match
         rule[:message] if value.present? && value != password_value
       when :username_format
@@ -92,13 +90,6 @@ module Forms
 
     def self.email_valid?(email)
       /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i.match?(email)
-    end
-
-    def self.password_strong?(password)
-      has_letter = /[a-zA-Z]/.match?(password)
-      has_number = /\d/.match?(password)
-      has_special = /[@$!%*?&]/.match?(password)
-      has_letter && has_number && has_special
     end
 
     def self.username_valid?(username)

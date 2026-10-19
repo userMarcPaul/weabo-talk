@@ -50,7 +50,9 @@ class PostsController < ApplicationController
 
     # Handle publish for existing drafts
     if action_type == "publish" && post_params[:id].present?
-      result = draft_service.publish_draft(post_params[:id])
+      # Save the form's edits first, otherwise publishing discards them
+      saved = draft_service.save_draft(post_params)
+      result = saved[:success] ? draft_service.publish_draft(saved[:post].id) : saved
       success_redirect = home_path
       success_message = "Post published successfully."
       failure_redirect = drafts_posts_path

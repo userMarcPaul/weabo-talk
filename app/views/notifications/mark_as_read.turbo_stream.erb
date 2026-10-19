@@ -1,5 +1,2 @@
-<turbo-stream action="update" target="<%= dom_id(@notification) %>">
-  <template>
-    <%= render "notifications/notification", notification: @notification %>
-  </template>
-</turbo-stream>
+<%= turbo_stream.replace @notification, partial: "notifications/notification", locals: { notification: @notification } %>
+<%= turbo_stream.replace "notifications-badge", partial: "notifications/badge", locals: { user: current_user } %>

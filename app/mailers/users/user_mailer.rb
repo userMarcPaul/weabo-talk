@@ -33,21 +33,26 @@ class Users::UserMailer < ApplicationMailer
   def confirmation_url(user, confirmation_token:)
     Rails.application.routes.url_helpers.user_confirmation_url(
       confirmation_token: confirmation_token,
-      host: ENV["APP_HOST"] || "localhost:3000"
+      **link_options
     )
   end
 
   def reset_password_url(user, reset_password_token:)
     Rails.application.routes.url_helpers.edit_user_password_url(
       reset_password_token: reset_password_token,
-      host: ENV["APP_HOST"] || "localhost:3000"
+      **link_options
     )
   end
 
   def unlock_url(user, unlock_token:)
     Rails.application.routes.url_helpers.user_unlock_url(
       unlock_token: unlock_token,
-      host: ENV["APP_HOST"] || "localhost:3000"
+      **link_options
     )
+  end
+
+  # Host and protocol for links in emails (APP_PROTOCOL is "https" in production)
+  def link_options
+    { host: ENV["APP_HOST"] || "localhost:3000", protocol: ENV["APP_PROTOCOL"] || "http" }
   end
 end

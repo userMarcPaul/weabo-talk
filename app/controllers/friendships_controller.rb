@@ -6,6 +6,7 @@ class FriendshipsController < ApplicationController
 
   # POST /friendships
   def create
+    @other_user = @friend_user
     @friendship = current_user.friendships.build(friend: @friend_user, status: "pending")
 
     if @friendship.save
@@ -26,6 +27,7 @@ class FriendshipsController < ApplicationController
   # PATCH/PUT /friendships/:id/accept
   def update
     @friendship = Friendship.find(params[:id])
+    @other_user = @friendship.user
 
     if current_user.id == @friendship.friend_id
       if @friendship.accept!

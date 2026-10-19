@@ -25,12 +25,7 @@
             </div>
 
             <!-- Actions -->
-            <div id="friendship-button-<%= friendship.id %>">
-              <div class="flex gap-2">
-                <%= button_to "Accept", friendship_path(friendship), method: :patch, local: true, params: { friendship: { accepted: true } }, class: "px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold text-sm" %>
-                <%= button_to "Decline", friendship_path(friendship), method: :delete, local: true, class: "px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-semibold text-sm" %>
-              </div>
-            </div>
+            <%= render "friendships/friend_button", user: friendship.user %>
           </div>
         <% end %>
       <% else %>

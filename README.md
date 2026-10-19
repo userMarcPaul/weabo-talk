@@ -127,8 +127,8 @@ bundle install
 rails db:create
 rails db:migrate
 
-# 4. Install JavaScript dependencies
-./bin/dev
+# 4. Install JavaScript dependencies (node_modules is not committed)
+npm install
 
 # 5. Start the development server
 # Visit http://localhost:3000

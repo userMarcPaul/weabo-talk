@@ -38,6 +38,26 @@ class FriendshipsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to profile_path(@receiver.profile.username)
   end
 
+  # Add Friend
+  test "sending a request with turbo stream should replace the friend button" do
+    stranger = create_user("stranger@example.com")
+    sign_in @sender
+
+    post friendships_path, params: { friend_id: stranger.id }, headers: { "Accept" => "text/vnd.turbo-stream.html, text/html, application/xhtml+xml" }
+
+    assert_response :success
+    assert_select "turbo-stream[action=replace][target=?]", "friend_button_user_#{stranger.id}"
+    assert_includes response.body, "Request Sent"
+  end
+
+  test "profile page should render the friend button the streams target" do
+    sign_in @receiver
+
+    get profile_path(@sender.profile.username)
+
+    assert_select "#friend_button_user_#{@sender.id}", text: /Accept/
+  end
+
   # Accept
   test "accepting with turbo stream should show friends button" do
     sign_in @receiver

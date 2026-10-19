@@ -21,6 +21,8 @@ class RealTimeNotificationsTest < ActionDispatch::IntegrationTest
 
     assert_select "turbo-cable-stream-source"
     assert_select "#notifications-badge"
+    # The app bundle (Turbo + Action Cable + Stimulus) must be loaded for the stream to connect
+    assert_select "script[src*='/assets/application'][type=module]"
   end
 
   # Broadcasts

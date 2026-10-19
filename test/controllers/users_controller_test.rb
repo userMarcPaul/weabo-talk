@@ -19,6 +19,15 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  # Show
+  test "user page should redirect to the profile" do
+    user = User.find_by!(email: "naruto@example.com")
+
+    get user_path(user)
+
+    assert_redirected_to profile_path(user.profile.username)
+  end
+
   # JSON Search (real-time search box)
   test "should return JSON results" do
     post search_users_path, params: { q: "naruto" }, as: :json

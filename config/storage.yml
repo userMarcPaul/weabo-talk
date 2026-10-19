@@ -6,6 +6,19 @@ local:
   service: Disk
   root: <%= Rails.root.join("storage") %>
 
+# Supabase Storage through its S3-compatible API (used in production, see DOCUMENTS/DEPLOYMENT.md)
+supabase:
+  service: S3
+  endpoint: <%= ENV["SUPABASE_S3_ENDPOINT"] %>
+  region: <%= ENV["SUPABASE_S3_REGION"] %>
+  bucket: <%= ENV["SUPABASE_S3_BUCKET"] %>
+  access_key_id: <%= ENV["SUPABASE_S3_ACCESS_KEY_ID"] %>
+  secret_access_key: <%= ENV["SUPABASE_S3_SECRET_ACCESS_KEY"] %>
+  force_path_style: true
+  # Newer aws-sdk-s3 versions add CRC checksums by default, which S3-compatible services may reject
+  request_checksum_calculation: when_required
+  response_checksum_validation: when_required
+
 # Use bin/rails credentials:edit to set the AWS secrets (as aws:access_key_id|secret_access_key)
 # amazon:
 #   service: S3
