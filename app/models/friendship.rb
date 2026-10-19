@@ -19,13 +19,29 @@ class Friendship < ApplicationRecord
   # Friendships the user sent or received
   scope :involving, ->(user) { where(user: user).or(where(friend: user)) }
 
-  after_create :notify_friend_request
+  # Only real requests notify; the accepted reverse friendship is created silently
+  after_create :notify_friend_request, if: :pending?
   after_destroy :cleanup_notifications, :destroy_reverse_friendship
 
+  def pending?
+    status == "pending"
+  end
+
+  def accepted?
+    status == "accepted"
+  end
+
+  # Accept a pending request: both directions become accepted and the sender is notified.
+  # Returns false if the request isn't pending (e.g. already accepted).
   def accept!
-    update(status: "accepted")
-    create_reverse_friendship unless reverse_friendship_exists?
-    notify_acceptance
+    return false unless pending?
+
+    transaction do
+      update!(status: "accepted")
+      accept_reverse_friendship!
+      notify_acceptance
+    end
+    true
   end
 
   def reject!
@@ -58,12 +74,9 @@ class Friendship < ApplicationRecord
     )
   end
 
-  def reverse_friendship_exists?
-    Friendship.exists?(user_id: friend_id, friend_id: user_id, status: "accepted")
-  end
-
-  def create_reverse_friendship
-    Friendship.create!(user_id: friend_id, friend_id: user_id, status: "accepted")
+  # The reverse friendship may already exist as a pending request from the other user
+  def accept_reverse_friendship!
+    Friendship.find_or_initialize_by(user_id: friend_id, friend_id: user_id).update!(status: "accepted")
   end
 
   def cleanup_notifications
