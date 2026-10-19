@@ -48,14 +48,15 @@ class FriendshipsController < ApplicationController
   end
 
   # DELETE /friendships/:id
+  # The sender can cancel or unfriend; the receiver can decline
   def destroy
-    @friendship = current_user.friendships.find(params[:id])
-    friend = @friendship.friend
+    @friendship = Friendship.involving(current_user).find(params[:id])
+    @other_user = @friendship.user == current_user ? @friendship.friend : @friendship.user
     @friendship.destroy
 
     respond_to do |format|
       format.turbo_stream { render :destroy }
-      format.html { redirect_to profile_path(friend.profile.username), notice: "Friend removed" }
+      format.html { redirect_to profile_path(@other_user.profile.username), notice: "Friend removed" }
       format.json { render json: { status: "success", message: "Friendship removed" } }
     end
   end

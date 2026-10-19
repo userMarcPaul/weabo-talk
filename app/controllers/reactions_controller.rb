@@ -24,7 +24,7 @@ class ReactionsController < ApplicationController
 
   # DELETE /posts/:post_id/reactions/:id
   def destroy
-    @reaction = @post.reactions.find(params[:id])
+    @reaction = @post.reactions.where(user: current_user).find(params[:id])
     @reaction.destroy
 
     respond_to do |format|
@@ -37,7 +37,7 @@ class ReactionsController < ApplicationController
   private
 
   def set_post
-    @post = Post.find(params[:post_id])
+    @post = Post.visible_to(current_user).find(params[:post_id])
   end
 
   def reaction_params

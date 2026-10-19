@@ -6,7 +6,6 @@ class LikesController < ApplicationController
 
 # POST /posts/:post_id/likes
 def create
-  @post = Post.find(params[:post_id])
   @like = @post.likes.create(user: current_user)
 
   respond_to do |format|
@@ -17,7 +16,6 @@ end
 # DELETE /posts/:post_id/likes/:id
 
 def destroy
-  @post = Post.find(params[:post_id])
   @like = @post.likes.find_by(user: current_user)
   @like.destroy if @like
 
@@ -30,6 +28,6 @@ end
   private
 
   def set_post
-    @post = Post.find(params[:post_id])
+    @post = Post.visible_to(current_user).find(params[:post_id])
   end
 end

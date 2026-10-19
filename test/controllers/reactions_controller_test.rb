@@ -1,0 +1,37 @@
+require "test_helper"
+
+class ReactionsControllerTest < ActionDispatch::IntegrationTest
+  include Devise::Test::IntegrationHelpers
+
+  setup do
+    @owner = create_user("owner@example.com")
+    @post = @owner.posts.create!(title: "Best anime", content: "Frieren")
+    @reaction = @post.reactions.create!(user: @owner, reaction_type: "🔥")
+  end
+
+  # Delete
+  test "owner should be able to delete their reaction" do
+    sign_in @owner
+
+    assert_difference "Reaction.count", -1 do
+      # Same Accept header Turbo sends from the browser
+      delete post_reaction_path(@post, @reaction), headers: { "Accept" => "text/vnd.turbo-stream.html, text/html, application/xhtml+xml" }
+    end
+    assert_response :success
+  end
+
+  test "other users should not be able to delete someone else's reaction" do
+    sign_in create_user("stranger@example.com")
+
+    assert_no_difference "Reaction.count" do
+      delete post_reaction_path(@post, @reaction), as: :turbo_stream
+    end
+    assert_response :not_found
+  end
+
+  private
+
+  def create_user(email)
+    User.create!(email: email, password: "password123", password_confirmation: "password123").tap(&:confirm)
+  end
+end
