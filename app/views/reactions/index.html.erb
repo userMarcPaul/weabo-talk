@@ -1,0 +1,19 @@
+<%= turbo_frame_tag "reactions_card_#{dom_id(@post)}" do %>
+  <% if @reactions_by_type.any? %>
+    <ul class="space-y-3">
+      <% @reactions_by_type.each do |emoji, reactions| %>
+        <li>
+          <div class="flex items-center justify-between font-semibold text-slate-200">
+            <span class="text-lg"><%= emoji %></span>
+            <span><%= reactions.size %></span>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">
+            <%= safe_join(reactions.map { |reaction| link_to(reaction.user.profile.username, profile_path(reaction.user.profile.username), data: { turbo_frame: "_top" }, class: "hover:text-purple-300") }, ", ") %>
+          </p>
+        </li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p class="text-slate-400">No reactions yet</p>
+  <% end %>
+<% end %>

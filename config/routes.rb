@@ -36,7 +36,7 @@ Rails.application.routes.draw do
   resources :posts do
     resources :comments, only: [ :create, :destroy ]
     resources :likes, only: [ :create, :destroy ]
-    resources :reactions, only: [ :create, :destroy ]
+    resources :reactions, only: [ :index, :create, :destroy ]
     member do
       patch :publish
     end

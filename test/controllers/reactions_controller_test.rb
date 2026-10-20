@@ -72,16 +72,53 @@ class ReactionsControllerTest < ActionDispatch::IntegrationTest
   end
 
   # Display
-  test "react button should show the user's reaction and the counts should show the emojis" do
+  test "react button should show the user's reaction and the counts only the total" do
     @post.reactions.create!(user: create_user("fan1@example.com"), reaction_type: "😂")
-    @post.reactions.create!(user: create_user("fan2@example.com"), reaction_type: "😂")
     sign_in @owner
 
     get post_path(@post)
 
     assert_select "#reaction_post_#{@post.id} button[type=button]", text: "🔥 Reacted"
-    # Most used first: 😂 x2, then 🔥 x1
-    assert_select "#stats_post_#{@post.id}", text: /😂\s*2\s*🔥\s*1\s*3\s+reactions/
+    assert_select "#stats_post_#{@post.id}" do
+      assert_select "summary", text: /2\s+reactions/
+      assert_select "turbo-frame#reactions_card_post_#{@post.id}[src=?][loading=lazy]", post_reactions_path(@post)
+      # The per-emoji list is only in the card
+      assert_select "summary", text: /😂|🔥/, count: 0
+    end
+  end
+
+  test "counts should not have a reactions card when there are no reactions" do
+    @reaction.destroy
+    sign_in @owner
+
+    get post_path(@post)
+
+    assert_select "#stats_post_#{@post.id}", text: /0\s+reactions/
+    assert_select "#stats_post_#{@post.id} details", count: 0
+  end
+
+  # Reactions card
+  test "reactions card should list each emoji with its count and who reacted, most used first" do
+    @post.reactions.create!(user: create_user("fan1@example.com"), reaction_type: "😂")
+    @post.reactions.create!(user: create_user("fan2@example.com"), reaction_type: "😂")
+
+    # Signed out visitors can open it too
+    get post_reactions_path(@post), headers: { "Turbo-Frame" => "reactions_card_post_#{@post.id}" }
+
+    assert_response :success
+    assert_select "turbo-frame#reactions_card_post_#{@post.id} li", count: 2
+    rows = css_select("turbo-frame#reactions_card_post_#{@post.id} li").map { |li| li.text.squish }
+    assert_equal "😂 2 fan1, fan2", rows.first
+    assert_equal "🔥 1 owner", rows.second
+  end
+
+  test "reactions card should not be available for someone else's draft" do
+    draft = @owner.posts.create!(title: "Secret", content: "Draft", status: :draft)
+    sign_in create_user("stranger@example.com")
+
+    get post_reactions_path(draft)
+
+    assert_response :not_found
   end
 
   # Picker
