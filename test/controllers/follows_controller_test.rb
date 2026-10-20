@@ -153,6 +153,18 @@ class FollowsControllerTest < ActionDispatch::IntegrationTest
     assert_select "[aria-current=page]", text: "2"
   end
 
+  test "a page number past the end or not a number should still show a page" do
+    Follow.create!(follower: @fan, followed: @artist)
+
+    get profile_followers_path(@artist.profile.username, page: 99)
+    assert_response :success
+    assert_select "#follow_item_user_#{@fan.id}"
+
+    get profile_followers_path(@artist.profile.username, page: "abc")
+    assert_response :success
+    assert_select "#follow_item_user_#{@fan.id}"
+  end
+
   test "following list should be visible to signed out visitors" do
     Follow.create!(follower: @fan, followed: @artist)
 
