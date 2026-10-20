@@ -18,13 +18,15 @@ module Users
 
     def search_with_details
       profiles = search
+      # One query for every result's follower count
+      followers_counts = Follow.where(followed_id: profiles.map(&:user_id)).group(:followed_id).count
       profiles.map do |profile|
         {
           id: profile.user_id,
           username: profile.username,
           bio: profile.bio.present? ? profile.bio : "No bio yet",
           avatar: profile.avatar.attached? ? generate_avatar_url(profile) : nil,
-          friends_count: profile.user.friendships.where(status: "accepted").count
+          followers_count: followers_counts.fetch(profile.user_id, 0)
         }
       end
     end

@@ -1,0 +1,28 @@
+<%# Previous / page numbers / Next for a Pagy page (current URL with ?page=). In the series the current page is a String and gaps are :gap. %>
+<% if pagy.pages > 1 %>
+  <% link_class = "px-3 py-2 bg-slate-700/50 hover:bg-slate-700 text-slate-200 rounded-lg transition" %>
+  <% disabled_class = "px-3 py-2 bg-slate-800/50 text-slate-500 rounded-lg" %>
+  <nav aria-label="pagination" class="flex flex-wrap justify-center gap-1 mt-8">
+    <% if pagy.prev %>
+      <%= link_to "← Previous", pagy_url_for(pagy, pagy.prev), class: link_class %>
+    <% else %>
+      <span class="<%= disabled_class %>">← Previous</span>
+    <% end %>
+
+    <% pagy.series.each do |page| %>
+      <% if page == :gap %>
+        <span class="px-2 py-2 text-slate-400">…</span>
+      <% elsif page.is_a?(String) %>
+        <span class="px-3 py-2 bg-purple-600 text-white rounded-lg font-semibold" aria-current="page"><%= page %></span>
+      <% else %>
+        <%= link_to page, pagy_url_for(pagy, page), class: link_class %>
+      <% end %>
+    <% end %>
+
+    <% if pagy.next %>
+      <%= link_to "Next →", pagy_url_for(pagy, pagy.next), class: link_class %>
+    <% else %>
+      <span class="<%= disabled_class %>">Next →</span>
+    <% end %>
+  </nav>
+<% end %>

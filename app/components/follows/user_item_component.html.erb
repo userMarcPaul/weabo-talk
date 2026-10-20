@@ -1,0 +1,17 @@
+<div id="<%= helpers.dom_id(user, :follow_item) %>" class="bg-slate-800/50 backdrop-blur-md border border-slate-700/50 rounded-lg p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 hover:border-slate-700 transition">
+  <div class="flex items-center gap-4 flex-1 min-w-0">
+    <%= render Profiles::ImageComponent.new(user: user, size: "lg") %>
+
+    <div class="flex-1 min-w-0">
+      <h3 class="font-semibold text-slate-100 text-lg break-words">
+        <%= link_to username, helpers.profile_path(username), class: "hover:text-purple-400 transition" %>
+      </h3>
+      <p class="text-sm text-slate-400 mt-1 line-clamp-2"><%= bio %></p>
+    </div>
+  </div>
+
+  <div class="flex gap-2 shrink-0">
+    <%= link_to "View Profile", helpers.profile_path(username), class: "px-3 py-2 bg-slate-700/60 hover:bg-slate-700 text-white rounded-lg transition text-sm font-semibold" %>
+    <%= helpers.render "follows/follow_button", user: user, following: following? %>
+  </div>
+</div>

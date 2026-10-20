@@ -8,8 +8,7 @@ class Notification < ApplicationRecord
     comment_created
     like_created
     reaction_created
-    friend_request_sent
-    friend_request_accepted
+    new_follower
   ].freeze
 
   validates :user_id, presence: true
@@ -22,6 +21,7 @@ class Notification < ApplicationRecord
   scope :recent, -> { order(created_at: :desc) }
 
   after_create_commit :broadcast_to_recipient
+  after_destroy_commit :broadcast_removal_to_recipient
 
   def marked_as_read?
     read_at.present?
@@ -50,5 +50,17 @@ class Notification < ApplicationRecord
                                partial: "notifications/notification", locals: { notification: self }
     broadcast_replace_later_to [ user, :notifications ], target: "notifications-badge",
                                partial: "notifications/badge", locals: { user: user }
+  end
+
+  # The like, reaction, comment or follow was undone (or the notification deleted): take it
+  # off the recipient's open pages and update the badge. Skipped when the recipient's
+  # account was deleted along with it.
+  def broadcast_removal_to_recipient
+    return unless User.exists?(user_id)
+
+    broadcast_remove_to [ user, :notifications ]
+    # Through the channel: the model's own *_later_to would pass this deleted record to the job
+    Turbo::StreamsChannel.broadcast_replace_later_to [ user, :notifications ], target: "notifications-badge",
+                                                     partial: "notifications/badge", locals: { user: user }
   end
 end

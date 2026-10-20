@@ -8,8 +8,8 @@ class NotificationsControllerTest < ActionDispatch::IntegrationTest
 
   setup do
     @user = create_user("reader@example.com")
-    friendship = Friendship.create!(user: create_user("friend@example.com"), friend: @user, status: "pending")
-    @notification = friendship.notifications.first
+    follow = Follow.create!(follower: create_user("fan@example.com"), followed: @user)
+    @notification = follow.notifications.first
   end
 
   test "marking as read with turbo should replace the notification and the badge" do
@@ -31,6 +31,19 @@ class NotificationsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "turbo-stream[action=remove][target=?]", "notification_#{@notification.id}"
     assert_select "turbo-stream[action=replace][target=notifications-badge]"
+  end
+
+  test "pagination should show the current page" do
+    20.times { |i| Follow.create!(follower: create_user("fan#{i}@example.com"), followed: @user) }
+    sign_in @user
+
+    get notifications_path(page: 2)
+
+    assert_select "[id^=notification_]", count: 1
+    assert_select "nav[aria-label=pagination]" do
+      assert_select "[aria-current=page]", text: "2"
+      assert_select "a[href=?]", notifications_path(page: 1), text: "1"
+    end
   end
 
   private

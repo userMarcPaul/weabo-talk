@@ -3,7 +3,6 @@ import PostFormController from "./post_form_controller"
 import CommentFormController from "./comment_form_controller"
 import PostController from "./post_controller"
 import ReactionPickerController from "./reaction_picker_controller"
-import FriendButtonController from "./friend_button_controller"
 import FormValidationController from "./form_validation_controller"
 import PostFormValidationController from "./post_form_validation_controller"
 import UserSearchController from "./user_search_controller"
@@ -17,7 +16,6 @@ application.register("comment-form", CommentFormController)
 application.register("post", PostController)
 application.register("reaction-picker", ReactionPickerController)
 application.register("form-validation", FormValidationController)
-application.register("friend-button", FriendButtonController)
 application.register("post-form-validation", PostFormValidationController)
 application.register("user-search", UserSearchController)
 application.register("flash", FlashController)

@@ -12,7 +12,6 @@ class ProfilesController < ApplicationController
     # Drafts stay on the owner's "My Drafts" page
     @posts = @user.posts.published_only.recent.includes(:user, :post_images, :comments, :likes, :reactions)
     @posts_count = @user.posts.published_only.count
-    @friends_count = @user.friends.count
   end
 
   # GET /profiles/:username/edit

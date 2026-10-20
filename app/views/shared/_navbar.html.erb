@@ -20,19 +20,14 @@
     <!-- Navigation Links & User Menu -->
     <div class="flex items-center gap-2 lg:gap-4">
       <% if user_signed_in? %>
-        <% has_friend_requests = current_user.passive_friendships.pending.any? %>
+        <% username = current_user.profile&.username %>
 
         <!-- Quick Links (wide screens; smaller screens have them in the profile menu) -->
         <div class="hidden lg:flex items-center space-x-3">
           <%= link_to "Feed", home_path, class: "px-3 py-2 text-slate-300 hover:text-purple-400 transition font-semibold text-sm whitespace-nowrap" %>
-          <%= link_to pending_friend_requests_path, class: "px-3 py-2 text-slate-300 hover:text-purple-400 transition font-semibold text-sm relative whitespace-nowrap" do %>
-            Friends
-            <% if has_friend_requests %>
-              <span class="absolute top-0 right-0 w-3 h-3 bg-rose-500 rounded-full"></span>
-            <% end %>
-          <% end %>
-          <%= link_to friendships_path, class: "px-3 py-2 text-slate-300 hover:text-purple-400 transition font-semibold text-sm whitespace-nowrap" do %>
-            My Friends
+          <% if username %>
+            <%= link_to "Following", profile_following_path(username), class: "px-3 py-2 text-slate-300 hover:text-purple-400 transition font-semibold text-sm whitespace-nowrap" %>
+            <%= link_to "Followers", profile_followers_path(username), class: "px-3 py-2 text-slate-300 hover:text-purple-400 transition font-semibold text-sm whitespace-nowrap" %>
           <% end %>
         </div>
 
@@ -58,10 +53,6 @@
             <svg class="w-6 h-6 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
             </svg>
-            <%# Friend requests: the Friends link is inside this menu on smaller screens %>
-            <% if has_friend_requests %>
-              <span class="lg:hidden absolute top-1 right-1 w-2 h-2 bg-rose-500 rounded-full"></span>
-            <% end %>
           </summary>
 
           <%# Solid background (backdrop-blur doesn't work inside the navbar's own backdrop-blur);
@@ -76,13 +67,10 @@
             <!-- Navigation (in the bar on wide screens) -->
             <div class="lg:hidden px-2 py-2 border-b border-slate-700/30">
               <%= link_to "Feed", home_path, class: "block w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-slate-800/50 rounded transition" %>
-              <%= link_to pending_friend_requests_path, class: "flex items-center justify-between px-4 py-2 text-sm text-slate-300 hover:bg-slate-800/50 rounded transition" do %>
-                Friends
-                <% if has_friend_requests %>
-                  <span class="w-2 h-2 bg-rose-500 rounded-full"></span>
-                <% end %>
+              <% if username %>
+                <%= link_to "Following", profile_following_path(username), class: "block w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-slate-800/50 rounded transition" %>
+                <%= link_to "Followers", profile_followers_path(username), class: "block w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-slate-800/50 rounded transition" %>
               <% end %>
-              <%= link_to "My Friends", friendships_path, class: "block w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-slate-800/50 rounded transition" %>
             </div>
 
             <!-- Profile & Settings Links -->

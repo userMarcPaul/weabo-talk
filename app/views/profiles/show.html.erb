@@ -52,8 +52,8 @@
                 <%= link_to "Edit Profile", edit_profile_path(@profile.username), 
                     class: "px-6 py-3 bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold rounded-lg transition duration-300 shadow-lg hover:shadow-purple-500/50 transform hover:scale-105 whitespace-nowrap h-fit" %>
               <% else %>
-                <!-- Friend Button (for other profiles): Add Friend, Request Sent, Accept/Decline, or Friends/Unfriend -->
-                <%= render "friendships/friend_button", user: @user %>
+                <!-- Follow Button (for other profiles): Follow / Following -->
+                <%= render "follows/follow_button", user: @user %>
               <% end %>
             </div>
 
@@ -63,15 +63,12 @@
             <% end %>
 
             <!-- Stats -->
-            <div class="flex gap-8 mt-8">
+            <div class="flex flex-wrap gap-8 mt-8">
               <div class="text-center">
                 <p class="text-3xl md:text-4xl font-black bg-linear-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent"><%= @posts_count %></p>
                 <p class="text-slate-400 mt-1 text-sm font-medium">Posts</p>
               </div>
-              <div class="text-center">
-                <p class="text-3xl md:text-4xl font-black bg-linear-to-r from-pink-400 to-rose-400 bg-clip-text text-transparent"><%= @friends_count %></p>
-                <p class="text-slate-400 mt-1 text-sm font-medium">Friends</p>
-              </div>
+              <%= render "follows/counts", user: @user %>
             </div>
           </div>
         </div>

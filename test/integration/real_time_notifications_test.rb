@@ -44,6 +44,45 @@ class RealTimeNotificationsTest < ActionDispatch::IntegrationTest
     assert_equal "comment_created", @author.notifications.last.notification_type
   end
 
+  test "new follower should be broadcast to the followed user" do
+    broadcasts = capture_turbo_stream_broadcasts [ @author, :notifications ] do
+      perform_enqueued_jobs { Follow.create!(follower: @fan, followed: @author) }
+    end
+
+    assert_equal %w[notifications-list notifications-badge], broadcasts.map { |stream| stream["target"] }
+    assert_includes broadcasts.first.to_html, "started following you"
+  end
+
+  test "undoing a like should take its notification off the page and update the badge" do
+    like = @post.likes.create!(user: @fan)
+    notification = like.notifications.first
+
+    broadcasts = capture_turbo_stream_broadcasts [ @author, :notifications ] do
+      perform_enqueued_jobs { like.destroy }
+    end
+
+    assert_equal %w[remove replace], broadcasts.map { |stream| stream["action"] }
+    assert_equal [ "notification_#{notification.id}", "notifications-badge" ], broadcasts.map { |stream| stream["target"] }
+  end
+
+  test "unfollowing should update the followed user's badge" do
+    follow = Follow.create!(follower: @fan, followed: @author)
+
+    broadcasts = capture_turbo_stream_broadcasts [ @author, :notifications ] do
+      perform_enqueued_jobs { follow.destroy }
+    end
+
+    assert_equal %w[notifications-badge], broadcasts.filter_map { |stream| stream["target"] if stream["action"] == "replace" }
+  end
+
+  test "deleting an account should not broadcast to it" do
+    @post.likes.create!(user: @fan)
+
+    assert_no_turbo_stream_broadcasts [ @author, :notifications ] do
+      assert_no_enqueued_jobs { @author.destroy! }
+    end
+  end
+
   private
 
   def create_user(email)

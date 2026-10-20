@@ -21,36 +21,7 @@
           <%= render "notifications/notification", notification: notification %>
         <% end %>
 
-        <!-- Pagination -->
-        <% if @pagy.pages > 1 %>
-          <nav aria-label="pagination" class="flex justify-center gap-2 mt-8">
-            <% if @pagy.prev %>
-              <%= link_to "← Previous", notifications_path(page: @pagy.prev), class: "px-4 py-2 bg-slate-700/50 hover:bg-slate-700 text-slate-200 rounded-lg transition" %>
-            <% else %>
-              <span class="px-4 py-2 bg-slate-800/50 text-slate-500 rounded-lg">← Previous</span>
-            <% end %>
-
-            <div class="flex gap-1">
-              <% @pagy.series.each do |page| %>
-                <% if page.is_a?(Integer) %>
-                  <% if page == @pagy.page %>
-                    <span class="px-3 py-2 bg-purple-600 text-white rounded-lg font-semibold"><%= page %></span>
-                  <% else %>
-                    <%= link_to page, notifications_path(page: page), class: "px-3 py-2 bg-slate-700/50 hover:bg-slate-700 text-slate-200 rounded-lg transition" %>
-                  <% end %>
-                <% elsif page == "gap" %>
-                  <span class="px-2 py-2 text-slate-400">...</span>
-                <% end %>
-              <% end %>
-            </div>
-
-            <% if @pagy.next %>
-              <%= link_to "Next →", notifications_path(page: @pagy.next), class: "px-4 py-2 bg-slate-700/50 hover:bg-slate-700 text-slate-200 rounded-lg transition" %>
-            <% else %>
-              <span class="px-4 py-2 bg-slate-800/50 text-slate-500 rounded-lg">Next →</span>
-            <% end %>
-          </nav>
-        <% end %>
+        <%= render "shared/pagination", pagy: @pagy %>
       <% else %>
         <div class="text-center py-12">
           <div class="text-6xl mb-4">🔔</div>

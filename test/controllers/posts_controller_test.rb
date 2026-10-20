@@ -243,7 +243,7 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
       assert_select "summary[aria-label=?]", "Profile menu"
       # Navigation for smaller screens (wide screens have it in the bar)
       assert_select "a[href=?]", home_path, text: "Feed"
-      assert_select "a[href=?]", friendships_path, text: "My Friends"
+      assert_select "a[href=?]", profile_following_path(@author.profile.username), text: "Following"
       assert_select "button", text: "Sign Out", count: 1
     end
   end

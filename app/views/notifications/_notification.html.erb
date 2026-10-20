@@ -22,17 +22,11 @@
         </p>
         <%= link_to "View Post", post_path(notifiable.post), class: "text-purple-400 hover:text-purple-300 text-sm font-semibold mt-2 inline-block" %>
 
-      <% when 'friend_request_sent' %>
+      <% when 'new_follower' %>
         <p class="text-slate-300">
-          <strong class="text-slate-100"><%= notifiable.user.profile&.username || notifiable.user.email %></strong> sent you a friend request
+          <strong class="text-slate-100"><%= notifiable.follower.profile&.username || notifiable.follower.email %></strong> started following you
         </p>
-        <%= link_to "View Profile", profile_path(notifiable.user.profile&.username), class: "text-purple-400 hover:text-purple-300 text-sm font-semibold mt-2 inline-block" %>
-
-      <% when 'friend_request_accepted' %>
-        <p class="text-slate-300">
-          <strong class="text-slate-100"><%= notifiable.friend.profile&.username || notifiable.friend.email %></strong> accepted your friend request
-        </p>
-        <%= link_to "View Profile", profile_path(notifiable.friend.profile&.username), class: "text-purple-400 hover:text-purple-300 text-sm font-semibold mt-2 inline-block" %>
+        <%= link_to "View Profile", profile_path(notifiable.follower.profile&.username), class: "text-purple-400 hover:text-purple-300 text-sm font-semibold mt-2 inline-block" %>
     <% end %>
 
     <p class="text-xs text-slate-500 mt-2">
