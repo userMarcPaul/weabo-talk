@@ -5,3 +5,4 @@
   <%= turbo_stream.prepend "comments-#{@post.id}", partial: "comments/comment", locals: { comment: @comment, post: @post } %>
   <%= turbo_stream.replace "comment-form-#{@post.id}", partial: "comments/form", locals: { post: @post, comment: Comment.new } %>
 <% end %>
+<%= turbo_stream.replace dom_id(@post, :stats), partial: "posts/stats", locals: { post: @post } %>

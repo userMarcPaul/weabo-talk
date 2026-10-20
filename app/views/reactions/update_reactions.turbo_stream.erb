@@ -1,3 +1,4 @@
 <%= turbo_stream.replace dom_id(@post, :reaction) do %>
   <%= render "reactions/reaction_button", post: @post %>
 <% end %>
+<%= turbo_stream.replace dom_id(@post, :stats), partial: "posts/stats", locals: { post: @post } %>

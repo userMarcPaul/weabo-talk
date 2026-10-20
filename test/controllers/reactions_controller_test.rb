@@ -29,6 +29,19 @@ class ReactionsControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
+  test "reacting should update the counts" do
+    sign_in @owner
+
+    post post_reactions_path(@post), params: { reaction: { reaction_type: "😂" } },
+                                     headers: { "Accept" => "text/vnd.turbo-stream.html, text/html, application/xhtml+xml" }
+
+    assert_response :success
+    # The 🔥 from setup plus the new 😂
+    assert_select "turbo-stream[action=replace][target=?]", "stats_post_#{@post.id}" do
+      assert_select "template", text: /2\s+reactions/
+    end
+  end
+
   # Picker
   test "picker should only offer reactions the model accepts" do
     sign_in @owner
