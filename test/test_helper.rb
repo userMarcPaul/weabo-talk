@@ -1,6 +1,7 @@
 ENV["RAILS_ENV"] ||= "test"
 require_relative "../config/environment"
 require "rails/test_help"
+require_relative "support/image_files"
 
 module ActiveSupport
   class TestCase
@@ -13,6 +14,7 @@ module ActiveSupport
     fixtures :all
 
     # Add more helper methods to be used by all tests here...
+    include ImageFiles
 
     # Email confirmation is off unless REQUIRE_EMAIL_CONFIRMATION=true (see User)
     def with_email_confirmation_required

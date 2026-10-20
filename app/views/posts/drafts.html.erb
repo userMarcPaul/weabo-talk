@@ -46,7 +46,7 @@
                 <% draft.post_images.each do |image| %>
                   <% if image.image.attached? %>
                     <div class="rounded-lg overflow-hidden">
-                      <%= image_tag image.image, alt: "Draft image", class: "w-full h-24 object-cover" %>
+                      <%= image_tag image.image_for_display, alt: "Draft image", class: "w-full h-24 object-cover" %>
                     </div>
                   <% end %>
                 <% end %>

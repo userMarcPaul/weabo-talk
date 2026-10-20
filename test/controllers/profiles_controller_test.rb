@@ -41,6 +41,24 @@ class ProfilesControllerTest < ActionDispatch::IntegrationTest
     assert_not_includes response.body, "<span>Email verified</span>"
   end
 
+  # Images
+  test "profile avatar should be shown as a smaller version" do
+    @owner.profile.update!(avatar: image_upload(width: 1000, height: 1000))
+
+    get profile_path(@owner.profile.username)
+
+    assert_select "img[alt=Avatar][src*='/rails/active_storage/representations/']"
+  end
+
+  test "too big avatar upload should show the error instead of crashing" do
+    sign_in @owner
+
+    patch profile_path(@owner.profile.username), params: { profile: { avatar: image_upload_param(width: 2600, height: 1800, format: "png", content_type: "image/png") } }
+
+    assert_response :unprocessable_entity
+    assert_includes response.body, "Avatar file size must be less than 5MB"
+  end
+
   # Update
   test "failed username change should keep the form on the saved username" do
     taken = create_user("taken@example.com").profile.username

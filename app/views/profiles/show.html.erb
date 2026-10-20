@@ -13,7 +13,7 @@
       <!-- Banner Image -->
       <div class="relative h-64 md:h-80 overflow-hidden">
         <% if @profile.banner.attached? %>
-          <%= image_tag @profile.banner, alt: "Banner", class: "w-full h-full object-cover" %>
+          <%= image_tag @profile.banner_for_display, alt: "Banner", class: "w-full h-full object-cover" %>
           <div class="absolute inset-0 bg-linear-to-b from-transparent via-transparent to-slate-950"></div>
         <% else %>
           <div class="w-full h-full bg-linear-to-r from-purple-600/40 via-pink-600/40 to-indigo-600/40 backdrop-blur-md"></div>
@@ -28,7 +28,7 @@
           <div class="shrink-0">
             <div class="relative">
               <% if @profile.avatar.attached? %>
-                <%= image_tag @profile.avatar, alt: "Avatar", class: "w-40 h-40 md:w-48 md:h-48 rounded-full border-4 border-slate-900 shadow-2xl object-cover ring-2 ring-purple-500/50" %>
+                <%= image_tag @profile.avatar_for_display, alt: "Avatar", class: "w-40 h-40 md:w-48 md:h-48 rounded-full border-4 border-slate-900 shadow-2xl object-cover ring-2 ring-purple-500/50" %>
               <% else %>
                 <div class="w-40 h-40 md:w-48 md:h-48 rounded-full border-4 border-slate-900 shadow-2xl bg-linear-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center ring-2 ring-purple-500/50 backdrop-blur">
                   <svg class="w-20 h-20 md:w-24 md:h-24 text-purple-400/50" fill="currentColor" viewBox="0 0 20 20">

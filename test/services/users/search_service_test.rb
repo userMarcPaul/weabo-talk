@@ -37,12 +37,12 @@ class Users::SearchServiceTest < ActiveSupport::TestCase
   end
 
   # Details (JSON)
-  test "search_with_details should include avatar path when avatar is attached" do
+  test "search_with_details should include the smaller avatar's path when avatar is attached" do
     @naruto.profile.avatar.attach(io: StringIO.new(png_data), filename: "avatar.png", content_type: "image/png")
 
     details = Users::SearchService.new("naruto").search_with_details.find { |user| user[:username] == "naruto" }
 
-    assert_match %r{\A/rails/active_storage/blobs/}, details[:avatar]
+    assert_match %r{\A/rails/active_storage/representations/}, details[:avatar]
   end
 
   test "search_with_details should return nil avatar and default bio when missing" do
