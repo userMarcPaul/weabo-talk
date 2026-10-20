@@ -1,8 +1,16 @@
 # frozen_string_literal: true
 
 class ReactionsController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, except: [ :index ]
   before_action :set_post
+
+  # GET /posts/:post_id/reactions
+  # The reactions card: each emoji with its count and who reacted, most used first.
+  # Loaded into its lazy turbo frame (posts/_stats) when the card is opened.
+  def index
+    @reactions_by_type = @post.reactions.includes(user: :profile).order(:created_at)
+                              .group_by(&:reaction_type).sort_by { |_, reactions| -reactions.size }
+  end
 
   # POST /posts/:post_id/reactions
   # One reaction per user: the same emoji again removes it, another emoji switches it

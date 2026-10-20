@@ -2,12 +2,22 @@
     replace this after each change, so the counts update without reloading the page. %>
 <div id="<%= dom_id(post, :stats) %>" class="flex gap-4 text-sm text-slate-400 mb-4 py-3 border-y border-slate-700/30">
   <span><strong class="text-slate-200"><%= post.likes.size %></strong> likes</span>
-  <span>
-    <%# Which emojis the post got, most used first %>
-    <% post.reactions.group_by(&:reaction_type).sort_by { |_, reactions| -reactions.size }.each do |emoji, reactions| %>
-      <span title="<%= pluralize(reactions.size, "reaction") %>"><%= emoji %><span class="text-slate-300"><%= reactions.size %></span></span>
-    <% end %>
-    <strong class="text-slate-200"><%= post.reactions.size %></strong> reactions
-  </span>
+  <% if post.reactions.size.zero? %>
+    <span><strong class="text-slate-200">0</strong> reactions</span>
+  <% else %>
+    <%# Click the total to open the reactions card. Its list loads when the card opens
+        (lazy frame inside a closed <details>), so the feed doesn't load every reactor. %>
+    <details class="relative">
+      <summary class="cursor-pointer list-none hover:text-purple-300 transition">
+        <strong class="text-slate-200"><%= post.reactions.size %></strong> reactions
+      </summary>
+      <div class="absolute left-0 top-full mt-2 w-64 max-w-[calc(100vw-2rem)] bg-slate-900/95 backdrop-blur-md border border-slate-700/50 rounded-lg shadow-xl p-4 z-40">
+        <h4 class="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-3">Reactions</h4>
+        <%= turbo_frame_tag "reactions_card_#{dom_id(post)}", src: post_reactions_path(post), loading: :lazy do %>
+          <p class="text-slate-400">Loading…</p>
+        <% end %>
+      </div>
+    </details>
+  <% end %>
   <span><strong class="text-slate-200"><%= post.comments.size %></strong> comments</span>
 </div>
