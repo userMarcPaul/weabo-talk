@@ -1,0 +1,7 @@
+<%# Like, reaction and comment counts. The likes, reactions and comments turbo streams
+    replace this after each change, so the counts update without reloading the page. %>
+<div id="<%= dom_id(post, :stats) %>" class="flex gap-4 text-sm text-slate-400 mb-4 py-3 border-y border-slate-700/30">
+  <span><strong class="text-slate-200"><%= post.likes.size %></strong> likes</span>
+  <span><strong class="text-slate-200"><%= post.reactions.size %></strong> reactions</span>
+  <span><strong class="text-slate-200"><%= post.comments.size %></strong> comments</span>
+</div>

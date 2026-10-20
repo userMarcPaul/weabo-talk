@@ -27,7 +27,11 @@ class CommentsController < ApplicationController
   # DELETE /posts/:post_id/comments/:id
   def destroy
     @comment.destroy
-    redirect_to post_path(@post), notice: "Comment was successfully deleted."
+
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to post_path(@post), notice: "Comment was successfully deleted." }
+    end
   end
 
   private

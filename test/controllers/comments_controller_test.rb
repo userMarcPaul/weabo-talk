@@ -20,7 +20,24 @@ class CommentsControllerTest < ActionDispatch::IntegrationTest
     assert_select "turbo-stream[action=prepend][target=?]", "comments-#{@post.id}"
     assert_select "turbo-stream[action=replace][target=?]", "comment-form-#{@post.id}"
     assert_select "turbo-stream[action=remove][target=?]", "no-comments-#{@post.id}"
+    assert_select "turbo-stream[action=replace][target=?]", "stats_post_#{@post.id}" do
+      assert_select "template", text: /1\s+comments/
+    end
     assert_includes response.body, "Great pick"
+  end
+
+  test "deleting a comment with turbo should remove it and update the counts" do
+    comment = @post.comments.create!(user: @user, content: "Remove me")
+    sign_in @user
+
+    delete post_comment_path(@post, comment), headers: TURBO
+
+    assert_response :success
+    assert_select "turbo-stream[action=remove][target=?]", "comment-#{comment.id}"
+    assert_select "turbo-stream[action=replace][target=?]", "stats_post_#{@post.id}" do
+      assert_select "template", text: /0\s+comments/
+    end
+    assert_not Comment.exists?(comment.id)
   end
 
   test "reply with turbo should be added under its parent comment" do
