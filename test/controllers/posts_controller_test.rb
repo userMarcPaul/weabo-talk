@@ -153,6 +153,29 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "turbo-stream[action=remove][target=?]", ActionView::RecordIdentifier.dom_id(published)
   end
 
+  # Post menu
+  test "post owner should get a click-to-open menu with edit and delete" do
+    published = @author.posts.create!(title: "Already out", content: "Published")
+    sign_in @author
+
+    get post_path(published)
+
+    assert_select "details[data-controller=dropdown] summary[aria-label=?]", "Post options"
+    assert_select "details[data-controller=dropdown]" do
+      assert_select "a[href=?]", edit_post_path(published), text: "Edit Post"
+      assert_select "form[action=?] button[data-turbo-confirm]", post_path(published), text: "Delete Post"
+    end
+  end
+
+  test "other users should not get the post menu" do
+    published = @author.posts.create!(title: "Already out", content: "Published")
+    sign_in User.create!(email: "reader@example.com", password: "password123", password_confirmation: "password123").tap(&:confirm)
+
+    get post_path(published)
+
+    assert_select "summary[aria-label=?]", "Post options", count: 0
+  end
+
   # Feed
   test "comment button in the feed should open the post page, not load inside its frame" do
     @author.posts.create!(title: "Frieren is peak", content: "Agree?")

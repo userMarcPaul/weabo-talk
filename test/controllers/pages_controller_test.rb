@@ -20,6 +20,17 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Post was successfully created."
   end
 
+  test "flash messages should close by themselves and not be kept in Turbo's page cache" do
+    sign_in @user
+
+    post posts_path, params: { post: { title: "New post", content: "Hello" } }
+    follow_redirect!
+
+    assert_select "[data-controller=flash][data-turbo-temporary]", text: /Post was successfully created/ do
+      assert_select "button[data-action='flash#dismiss']"
+    end
+  end
+
   test "home should render the page for Turbo requests" do
     sign_in @user
 

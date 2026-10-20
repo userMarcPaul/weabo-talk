@@ -3,24 +3,26 @@
 <% if user_signed_in? %>
   <%# The user's one reaction on this post, from the loaded reactions %>
   <% my_reaction = post.reactions.find { |r| r.user_id == current_user.id } %>
-  <div class="relative group flex-1" style="position: relative;">
-    <button type="button" class="w-full py-2 px-3 text-center rounded-lg hover:bg-slate-700/50 <%= my_reaction ? "text-purple-300" : "text-slate-300" %> transition font-semibold text-sm bg-transparent border-0 cursor-pointer active:bg-slate-600">
+  <%# Click/tap to open (phones have no hover, and the hover version closed while moving
+      to the emojis). Phones: the picker spans the post's button row; wider: above this button %>
+  <details class="sm:relative" data-controller="dropdown">
+    <summary class="list-none cursor-pointer w-full py-2 px-3 text-center rounded-lg hover:bg-slate-700/50 <%= my_reaction ? "text-purple-300" : "text-slate-300" %> transition font-semibold text-sm active:bg-slate-600" aria-label="React">
       <%= my_reaction ? "#{my_reaction.reaction_type} Reacted" : "😊 React" %>
-    </button>
+    </summary>
 
-    <!-- Reaction Picker (Hidden by default) -->
-    <div class="absolute bottom-full left-0 mb-2 hidden group-hover:block bg-slate-900/95 backdrop-blur-md border border-slate-700/50 rounded-lg shadow-xl p-2 z-50" style="white-space: nowrap;">
+    <!-- Reaction Picker -->
+    <div class="absolute bottom-full left-0 right-0 sm:right-auto sm:w-max mb-2 flex flex-wrap justify-center gap-1 bg-slate-900 border border-slate-700/50 rounded-lg shadow-xl p-2 z-50">
       <% Reaction::ALLOWED_REACTIONS.each do |emoji| %>
-        <%= button_to emoji, post_reactions_path(post), 
+        <%= button_to emoji, post_reactions_path(post),
         method: :post,
         params: { reaction: { reaction_type: emoji } },
         data: {turbo_stream: true},
         title: my_reaction&.reaction_type == emoji ? "Remove reaction" : nil,
-        class: "inline-block px-2 py-1 hover:bg-slate-800/50 rounded text-lg border-0 cursor-pointer #{my_reaction&.reaction_type == emoji ? "bg-purple-600/40" : "bg-transparent"}" %>
-        
+        form_class: "inline-block",
+        class: "px-2 py-1 hover:bg-slate-800/50 rounded text-lg border-0 cursor-pointer #{my_reaction&.reaction_type == emoji ? "bg-purple-600/40" : "bg-transparent"}" %>
       <% end %>
     </div>
-  </div>
+  </details>
 <% else %>
   <%= link_to "😊 React", user_session_path, data: { turbo_frame: "_top" }, class: "flex-1 py-2 px-3 text-center rounded-lg hover:bg-slate-700/50 text-slate-300 transition font-semibold text-sm" %>
 <% end %>

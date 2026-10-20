@@ -78,7 +78,7 @@ class ReactionsControllerTest < ActionDispatch::IntegrationTest
 
     get post_path(@post)
 
-    assert_select "#reaction_post_#{@post.id} button[type=button]", text: "🔥 Reacted"
+    assert_select "#reaction_post_#{@post.id} details[data-controller=dropdown] summary", text: "🔥 Reacted"
     assert_select "#stats_post_#{@post.id}" do
       assert_select "summary", text: /2\s+reactions/
       assert_select "turbo-frame#reactions_card_post_#{@post.id}[src=?][loading=lazy]", post_reactions_path(@post)

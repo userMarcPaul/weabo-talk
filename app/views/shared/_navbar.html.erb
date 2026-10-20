@@ -47,7 +47,7 @@
         <%= turbo_stream_from current_user, :notifications %>
 
         <!-- Profile Menu (every screen size; opens on click so it works on touch screens) -->
-        <details class="relative">
+        <details class="relative" data-controller="dropdown">
           <summary class="list-none cursor-pointer flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-slate-800/50 transition duration-200 text-slate-300 relative" aria-label="Profile menu">
             <div class="hidden xl:block text-right">
               <p class="text-sm font-semibold text-slate-100 truncate max-w-48"><%= current_user.email %></p>

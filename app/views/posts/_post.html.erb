@@ -21,7 +21,8 @@
   <!-- Like, Reaction, Comment Buttons -->
   
  
-    <div class="flex gap-2">
+    <%# relative: on phones the reaction picker spans this row %>
+    <div class="relative flex gap-2">
     <%# The partials carry the ids (like_post_1, reaction_post_1) their turbo streams replace %>
     <%= render "likes/like_button", post: post %>
     <%= render "reactions/reaction_button", post: post %>
