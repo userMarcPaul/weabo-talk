@@ -1,0 +1,50 @@
+<%# Followers or Following list of a profile (@list is :followers or :following) %>
+<% username = @user.profile.username %>
+<div class="min-h-screen bg-slate-950 text-white">
+  <div class="container mx-auto px-4 py-8 max-w-3xl">
+    <!-- Back Button -->
+    <div class="mb-6">
+      <%= link_to "← Back to #{username}", profile_path(username), class: "text-purple-400 hover:text-purple-300 transition font-semibold break-words" %>
+    </div>
+
+    <!-- Page Header -->
+    <div class="mb-6">
+      <h1 class="text-3xl sm:text-4xl font-bold text-slate-100 mb-2 break-words">
+        <span class="bg-linear-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent"><%= @list == :followers ? "Followers" : "Following" %></span>
+      </h1>
+      <p class="text-slate-400 break-words">
+        <%= @list == :followers ? "People who follow #{username}" : "People #{username} follows" %>
+      </p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="flex gap-2 mb-6 border-b border-slate-700/50">
+      <% [ [ :followers, "Followers", profile_followers_path(username), @user.followers.count ], [ :following, "Following", profile_following_path(username), @user.following.count ] ].each do |list, label, path, count| %>
+        <%= link_to path, class: "px-4 py-2 -mb-px border-b-2 font-semibold text-sm transition #{@list == list ? "border-purple-500 text-purple-300" : "border-transparent text-slate-400 hover:text-slate-200"}" do %>
+          <%= label %> <span class="text-slate-500"><%= count %></span>
+        <% end %>
+      <% end %>
+    </div>
+
+    <!-- List -->
+    <% if @users.any? %>
+      <div class="space-y-3">
+        <% @users.each do |user| %>
+          <%= render Follows::UserItemComponent.new(user: user, following: @following_ids.include?(user.id)) %>
+        <% end %>
+      </div>
+
+      <%= render "shared/pagination", pagy: @pagy %>
+    <% else %>
+      <!-- Empty State -->
+      <div class="text-center py-16">
+        <div class="text-6xl mb-4">👥</div>
+        <h2 class="text-2xl font-bold text-slate-300 mb-2">
+          <%= @list == :followers ? "No followers yet" : "Not following anyone yet" %>
+        </h2>
+        <p class="text-slate-400 mb-6">Find other anime fans to follow!</p>
+        <%= link_to "🔍 Find Users", search_users_path, class: "px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition font-semibold" %>
+      </div>
+    <% end %>
+  </div>
+</div>

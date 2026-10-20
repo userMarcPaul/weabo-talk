@@ -1,0 +1,3 @@
+<%= turbo_stream.replace dom_id(@user, :follow_button), partial: "follows/follow_button", locals: { user: @user } %>
+<%# Only on the followed user's profile; ignored on other pages %>
+<%= turbo_stream.replace dom_id(@user, :follow_counts), partial: "follows/counts", locals: { user: @user } %>

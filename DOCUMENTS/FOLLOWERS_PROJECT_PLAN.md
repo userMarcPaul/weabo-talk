@@ -3,7 +3,8 @@
 **Goal**: Replace the two-way friend system (request → accept) with one-way following,
 like Instagram or X. Anyone can follow anyone; nobody has to accept or follow back.
 
-**Status**: Planned · **Estimate**: about 1–1.5 days · **Priority**: 🟡 Medium
+**Status**: Phases 1–5 done (decisions D1–D6 as recommended); phase 6 (deploy) and the
+optional phase 7 are next · **Priority**: 🟡 Medium
 
 ---
 
@@ -76,6 +77,7 @@ def following?(user) = active_follows.exists?(followed: user)
 
 - Old notifications with type `friend_request_sent` or `friend_request_accepted` are deleted.
 - **The `friendships` table is dropped in a second, later migration**, after the new system has been checked in production. Until then the old data stays in place as a fallback.
+- The same migration **removes the `friendships` foreign keys to `users`**. Without the `Friendship` model nothing deletes those rows anymore, so the foreign keys would block deleting an account that still has old friendship rows.
 
 ---
 
@@ -96,44 +98,44 @@ user's Following page instead of returning 404, in case someone bookmarked them.
 ## 5. Work plan
 
 ### Phase 1: Database & model (≈ 2–3 h)
-- [ ] Migration: create `follows` with indexes and foreign keys
-- [ ] Migration: copy friendships into follows (section 3) and delete old friend notifications
-- [ ] `Follow` model, validations, `new_follower` notification
-- [ ] `User` associations and `following?`
-- [ ] Add `new_follower` to `Notification::NOTIFICATION_TYPES`
-- [ ] Model tests: follow, unfollow, no self-follow, no duplicates, notification created
+- [x] Migration: create `follows` with indexes and foreign keys
+- [x] Migration: copy friendships into follows (section 3) and delete old friend notifications
+- [x] `Follow` model, validations, `new_follower` notification
+- [x] `User` associations and `following?`
+- [x] Add `new_follower` to `Notification::NOTIFICATION_TYPES`
+- [x] Model tests: follow, unfollow, no self-follow, no duplicates, notification created
 
 ### Phase 2: Follow / Unfollow (≈ 2 h)
-- [ ] `FollowsController#create` / `#destroy`, signed-in users only; responds with a Turbo Stream and has an HTML fallback
-- [ ] `follows/_follow_button.html.erb`: **Follow** / **Following**, with **Unfollow** on click or hover. Keyed by `dom_id(user, :follow_button)` so it updates in place on any page.
-- [ ] Turbo Stream templates: replace the button and the profile's follower count
-- [ ] Notification partial: "**username** started following you" with a View Profile link
-- [ ] Controller tests: follow, unfollow, can't follow yourself, signed-out users are redirected to sign in
+- [x] `FollowsController#create` / `#destroy`, signed-in users only; responds with a Turbo Stream and has an HTML fallback
+- [x] `follows/_follow_button.html.erb`: **Follow** / **Following**, with **Unfollow** on click or hover. Keyed by `dom_id(user, :follow_button)` so it updates in place on any page.
+- [x] Turbo Stream templates: replace the button and the profile's follower count
+- [x] Notification partial: "**username** started following you" with a View Profile link
+- [x] Controller tests: follow, unfollow, can't follow yourself, signed-out users are redirected to sign in
 
 ### Phase 3: Pages & copy (≈ 2 h)
-- [ ] Profile (`profiles/show`): **Followers** and **Following** counts (each links to its list) and the follow button
-- [ ] **Followers** and **Following** list pages, reusing the friend list item (renamed `Follows::UserItemComponent`) with a follow button instead of **Remove**
-- [ ] Navbar (`shared/_navbar`): replace **Friends** / **My Friends** with **Following** / **Followers**, and remove the friend-request red dot (bar and profile menu)
-- [ ] Search: `friends_count` → `followers_count` in `Users::SearchService` and `user_search_controller.js`
-- [ ] Copy: change "friends" wording in `pages/home`, `posts/index`, `confirmations/pending`, `users/confirmations/confirmed`
-- [ ] Keep the pages responsive (360 px – 1440 px), as checked in the responsiveness pass
+- [x] Profile (`profiles/show`): **Followers** and **Following** counts (each links to its list) and the follow button
+- [x] **Followers** and **Following** list pages, reusing the friend list item (renamed `Follows::UserItemComponent`) with a follow button instead of **Remove**, 20 per page
+- [x] Navbar (`shared/_navbar`): replace **Friends** / **My Friends** with **Following** / **Followers**, and remove the friend-request red dot (bar and profile menu)
+- [x] Search: `friends_count` → `followers_count` in `Users::SearchService` and `user_search_controller.js`
+- [x] Copy: change "friends" wording in `pages/home`, `posts/index`, `confirmations/pending`, `users/confirmations/confirmed`
+- [x] Keep the pages responsive (360 px – 1440 px), as checked in the responsiveness pass
 
 ### Phase 4: Remove the friend system (≈ 1 h)
-- [ ] Delete `Friendship` model, `FriendshipsController`, `app/views/friendships/*`, `Friendships::FriendItemComponent`
-- [ ] Delete the unused `friend_button_controller.js` and its registration in `controllers/index.js`
-- [ ] Remove friendship associations from `User`, and the friend types from `Notification`
-- [ ] Routes: remove friendships, add the redirects (section 4)
-- [ ] Replace `friendships_controller_test.rb` / `friendship_test.rb` with follow tests; update the posts and notifications tests that use friendships
+- [x] Delete `Friendship` model, `FriendshipsController`, `app/views/friendships/*`, `Friendships::FriendItemComponent`
+- [x] Delete the unused `friend_button_controller.js` and its registration in `controllers/index.js`
+- [x] Remove friendship associations from `User`, and the friend types from `Notification`
+- [x] Routes: remove friendships, add the redirects (section 4)
+- [x] Replace `friendships_controller_test.rb` / `friendship_test.rb` with follow tests; update the posts and notifications tests that use friendships
 
 ### Phase 5: Checks (≈ 1–2 h)
-- [ ] Full test suite and RuboCop pass
-- [ ] Browser check (Firefox, phone and desktop):
+- [x] Full test suite and RuboCop pass
+- [x] Browser check (Firefox, phone and desktop):
   - follow and unfollow update without a page reload
   - counts change
   - the notification arrives live
   - lists open
   - old URLs redirect
-- [ ] Migration check on a copy of real data: friend pairs become mutual follows, pending requests become one follow, counts match
+- [x] Migration check on test data in development: friend pairs became mutual follows, pending requests one follow, blocked rows dropped, friend notifications deleted, accounts with old rows can still be deleted
 
 ### Phase 6: Deploy
 - [ ] **Back up the Supabase database first** (`pg_dump` with the Session pooler connection string)

@@ -37,6 +37,15 @@ class Users::SearchServiceTest < ActiveSupport::TestCase
   end
 
   # Details (JSON)
+  test "search_with_details should include each user's follower count" do
+    Follow.create!(follower: @naruto_fan, followed: @naruto)
+
+    details = Users::SearchService.new("naruto").search_with_details.index_by { |user| user[:username] }
+
+    assert_equal 1, details["naruto"][:followers_count]
+    assert_equal 0, details[@naruto_fan.profile.username][:followers_count]
+  end
+
   test "search_with_details should include the smaller avatar's path when avatar is attached" do
     @naruto.profile.avatar.attach(io: StringIO.new(png_data), filename: "avatar.png", content_type: "image/png")
 

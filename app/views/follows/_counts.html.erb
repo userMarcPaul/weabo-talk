@@ -1,0 +1,12 @@
+<%# Followers / Following counts on a profile (replaced by follows/update after a follow or unfollow) %>
+<div id="<%= dom_id(user, :follow_counts) %>" class="contents">
+  <% followers_count = user.followers.count %>
+  <%= link_to profile_followers_path(user.profile.username), class: "text-center hover:opacity-80 transition" do %>
+    <p class="text-3xl md:text-4xl font-black bg-linear-to-r from-pink-400 to-rose-400 bg-clip-text text-transparent"><%= followers_count %></p>
+    <p class="text-slate-400 mt-1 text-sm font-medium"><%= "Follower".pluralize(followers_count) %></p>
+  <% end %>
+  <%= link_to profile_following_path(user.profile.username), class: "text-center hover:opacity-80 transition" do %>
+    <p class="text-3xl md:text-4xl font-black bg-linear-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent"><%= user.following.count %></p>
+    <p class="text-slate-400 mt-1 text-sm font-medium">Following</p>
+  <% end %>
+</div>

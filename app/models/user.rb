@@ -12,16 +12,11 @@ class User < ApplicationRecord
   has_many :reactions, dependent: :destroy
   has_many :notifications, dependent: :destroy
 
-  # Friendships
-  has_many :friendships, dependent: :destroy
-  has_many :friends, -> { where(friendships: { status: "accepted" }) }, through: :friendships, source: :friend
-  has_many :friend_requests, class_name: "Friendship", foreign_key: "friend_id", dependent: :destroy
-  has_many :requested_by, through: :friend_requests, source: :user
-
-  # Active friendships (initiated by this user)
-  has_many :active_friendships, class_name: "Friendship", foreign_key: "user_id", dependent: :destroy
-  # Passive friendships (requested to this user)
-  has_many :passive_friendships, class_name: "Friendship", foreign_key: "friend_id", dependent: :destroy
+  # Follows (one-way): people this user follows, and people who follow this user
+  has_many :active_follows, class_name: "Follow", foreign_key: :follower_id, dependent: :destroy
+  has_many :passive_follows, class_name: "Follow", foreign_key: :followed_id, dependent: :destroy
+  has_many :following, through: :active_follows, source: :followed
+  has_many :followers, through: :passive_follows, source: :follower
 
   # Callbacks
   after_create :create_profile
@@ -30,6 +25,10 @@ class User < ApplicationRecord
   # can't send email). When off, new users can sign in right away and no email is sent.
   def self.email_confirmation_required?
     ENV["REQUIRE_EMAIL_CONFIRMATION"] == "true"
+  end
+
+  def following?(user)
+    active_follows.exists?(followed: user)
   end
 
   # Use custom mailer for sending emails

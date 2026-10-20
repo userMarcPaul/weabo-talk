@@ -24,6 +24,12 @@ Rails.application.routes.draw do
 
   # User Profiles
   get "/profiles/:username", to: "profiles#show", as: :profile
+  # Follows (one-way): follow / unfollow, and the lists on a profile
+  get "/profiles/:username/follow", to: "follows#show", as: :follow_profile
+  post "/profiles/:username/follow", to: "follows#create"
+  delete "/profiles/:username/follow", to: "follows#destroy"
+  get "/profiles/:username/followers", to: "follows#followers", as: :profile_followers
+  get "/profiles/:username/following", to: "follows#following", as: :profile_following
   get "/profiles/:username/edit", to: "profiles#edit", as: :edit_profile
   patch "/profiles/:username", to: "profiles#update"
   put "/profiles/:username", to: "profiles#update"
@@ -44,9 +50,9 @@ Rails.application.routes.draw do
   post "posts/save-draft", to: "posts#save_draft", as: :save_draft_post
   get "my-drafts", to: "posts#drafts", as: :drafts_posts
 
-  # Friendships
-  resources :friendships, only: [ :create, :destroy, :update, :index ]
-  get "friend-requests", to: "friendships#pending_requests", as: :pending_friend_requests
+  # Old friend pages (replaced by follows): bookmarks open the user's Following list
+  get "friendships", to: "follows#mine"
+  get "friend-requests", to: "follows#mine"
 
   # Notifications
   resources :notifications, only: [ :index, :destroy ]

@@ -1,0 +1,18 @@
+<%# Follow / Following button (self-start: natural width in the profile's stacked header on phones). Keyed by the user, so follows/update can replace it on any page.
+    `following` can be passed in by lists (they look the follows up once); otherwise it's queried. %>
+<% if !user_signed_in? %>
+  <%= link_to "Follow", follow_profile_path(user.profile.username), class: "self-start px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold text-sm" %>
+<% elsif current_user != user %>
+  <% following = local_assigns.fetch(:following) { current_user.following?(user) } %>
+  <div id="<%= dom_id(user, :follow_button) %>" class="self-start">
+    <% if following %>
+      <%= button_to "✓ Following", follow_profile_path(user.profile.username), method: :delete,
+            form: { data: { turbo_confirm: "Unfollow #{user.profile.username}?" } },
+            title: "Unfollow",
+            class: "px-4 py-2 bg-slate-700 hover:bg-rose-600 text-white rounded-lg font-semibold text-sm transition cursor-pointer" %>
+    <% else %>
+      <%= button_to "Follow", follow_profile_path(user.profile.username), method: :post,
+            class: "px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-semibold text-sm transition cursor-pointer" %>
+    <% end %>
+  </div>
+<% end %>

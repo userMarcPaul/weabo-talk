@@ -70,4 +70,15 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     assert_select "turbo-stream[action=replace][target=load-more]"
     assert_includes response.body, "Post 0" # the oldest post is on page 2
   end
+
+  test "load more past the last page should add nothing and remove the button" do
+    @user.posts.create!(title: "Only post", content: "x")
+    sign_in @user
+
+    get home_feed_path(page: 5), headers: TURBO
+
+    assert_response :success
+    assert_not_includes response.body, "Only post"
+    assert_select "turbo-stream[action=replace][target=load-more] template a", count: 0
+  end
 end

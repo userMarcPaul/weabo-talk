@@ -181,7 +181,7 @@ export default class extends Controller {
           <div class="flex-1 min-w-0">
             <h3 class="font-semibold text-slate-100 group-hover:text-purple-400 transition">${this.escapeHtml(user.username)}</h3>
             <p class="text-sm text-slate-400 truncate">${this.escapeHtml(user.bio)}</p>
-            <p class="text-xs text-slate-500 mt-1">👥 ${user.friends_count} friend${user.friends_count !== 1 ? "s" : ""}</p>
+            <p class="text-xs text-slate-500 mt-1">👥 ${user.followers_count} follower${user.followers_count !== 1 ? "s" : ""}</p>
           </div>
         </div>
       </a>
