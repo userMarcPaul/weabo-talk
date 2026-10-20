@@ -42,6 +42,18 @@ class FollowsControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "following button should unfollow without asking first" do
+    Follow.create!(follower: @fan, followed: @artist)
+    sign_in @fan
+
+    get profile_path(@artist.profile.username)
+
+    assert_select "#follow_button_user_#{@artist.id} form[action=?]", follow_profile_path(@artist.profile.username) do |form|
+      assert_nil form.first["data-turbo-confirm"]
+      assert_select "button", text: "✓ Following"
+    end
+  end
+
   test "following without turbo should redirect to the profile" do
     sign_in @fan
 

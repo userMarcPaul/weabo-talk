@@ -8,6 +8,7 @@ import PostFormValidationController from "./post_form_validation_controller"
 import UserSearchController from "./user_search_controller"
 import FlashController from "./flash_controller"
 import DropdownController from "./dropdown_controller"
+import ConfirmDialogController from "./confirm_dialog_controller"
 
 const application = Application.start()
 
@@ -20,5 +21,6 @@ application.register("post-form-validation", PostFormValidationController)
 application.register("user-search", UserSearchController)
 application.register("flash", FlashController)
 application.register("dropdown", DropdownController)
+application.register("confirm-dialog", ConfirmDialogController)
 
 export { application }

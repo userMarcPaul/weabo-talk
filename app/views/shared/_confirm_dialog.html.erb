@@ -1,0 +1,26 @@
+<%# Confirmation card for data-turbo-confirm (confirm-dialog controller), rendered once by the
+    application layout. The buttons close the <dialog> with "cancel" or "confirm"; Escape and
+    a click outside the card cancel. Cancel is focused first, so Enter doesn't delete by accident. %>
+<dialog id="confirm-dialog" data-controller="confirm-dialog" data-action="click->confirm-dialog#closeOnBackdrop"
+        aria-labelledby="confirm-dialog-message"
+        class="m-auto w-[calc(100%-2rem)] max-w-sm bg-transparent p-0 text-slate-100 backdrop:bg-slate-950/70 backdrop:backdrop-blur-sm">
+  <form method="dialog" class="bg-slate-900 border border-slate-700/50 rounded-xl shadow-2xl shadow-purple-500/10 p-6">
+    <div class="flex items-start gap-4">
+      <div class="shrink-0 w-10 h-10 rounded-full bg-rose-500/15 border border-rose-500/30 flex items-center justify-center">
+        <svg class="w-5 h-5 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3.75m0 3.75h.008M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+        </svg>
+      </div>
+      <div class="flex-1 min-w-0 pt-1">
+        <h2 id="confirm-dialog-message" data-confirm-dialog-target="message" class="text-lg font-bold text-slate-100 break-words"></h2>
+        <p data-confirm-dialog-target="details" class="mt-1 text-sm text-slate-400 break-words" hidden></p>
+      </div>
+    </div>
+
+    <%# Stacked (confirm on top) on phones, side by side from sm %>
+    <div class="mt-6 flex flex-col-reverse sm:flex-row sm:justify-end gap-2">
+      <button value="cancel" autofocus class="px-4 py-2 bg-slate-700/60 hover:bg-slate-700 text-slate-200 rounded-lg font-semibold text-sm transition cursor-pointer">Cancel</button>
+      <button value="confirm" data-confirm-dialog-target="confirmButton" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-semibold text-sm transition cursor-pointer">Confirm</button>
+    </div>
+  </form>
+</dialog>

@@ -163,7 +163,18 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "details[data-controller=dropdown] summary[aria-label=?]", "Post options"
     assert_select "details[data-controller=dropdown]" do
       assert_select "a[href=?]", edit_post_path(published), text: "Edit Post"
-      assert_select "form[action=?] button[data-turbo-confirm]", post_path(published), text: "Delete Post"
+      assert_select "form[action=?] button[data-turbo-confirm][data-confirm-button=Delete]", post_path(published), text: "Delete Post"
+    end
+  end
+
+  test "pages should have the confirmation card used instead of the browser's confirm" do
+    sign_in @author
+
+    get root_path
+
+    assert_select "dialog#confirm-dialog[data-controller=confirm-dialog]", count: 1 do
+      assert_select "button[value=cancel][autofocus]", text: "Cancel"
+      assert_select "button[value=confirm][data-confirm-dialog-target=confirmButton]"
     end
   end
 

@@ -6,8 +6,8 @@
   <% following = local_assigns.fetch(:following) { current_user.following?(user) } %>
   <div id="<%= dom_id(user, :follow_button) %>" class="self-start">
     <% if following %>
+      <%# Unfollows right away, no confirmation (like TikTok); clicking Follow again undoes it %>
       <%= button_to "✓ Following", follow_profile_path(user.profile.username), method: :delete,
-            form: { data: { turbo_confirm: "Unfollow #{user.profile.username}?" } },
             title: "Unfollow",
             class: "px-4 py-2 bg-slate-700 hover:bg-rose-600 text-white rounded-lg font-semibold text-sm transition cursor-pointer" %>
     <% else %>
