@@ -175,6 +175,23 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 1, count_queries.size, count_queries.join("\n")
   end
 
+  test "my posts link should open the user's own profile" do
+    sign_in @author
+
+    get root_path
+
+    assert_select "a[href=?]", profile_path(@author.profile.username), text: "My Posts"
+  end
+
+  test "links in the posts list should open as normal pages" do
+    @author.posts.create!(title: "Frieren is peak", content: "Agree?")
+    sign_in @author
+
+    get posts_path
+
+    assert_select "turbo-frame#posts-feed[target=_top]"
+  end
+
   test "post titles should be shown in the feed" do
     @author.posts.create!(title: "Frieren is peak", content: "Agree?")
     sign_in @author

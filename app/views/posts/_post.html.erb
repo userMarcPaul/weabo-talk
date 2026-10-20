@@ -23,12 +23,9 @@
   
  
     <div class="flex gap-2">
-      <turbo-frame id="<%= dom_id(post, :like) %>">
+    <%# The partials carry the ids (like_post_1, reaction_post_1) their turbo streams replace %>
     <%= render "likes/like_button", post: post %>
-      </turbo-frame>
-      <turbo-frame id="<%= dom_id(post, :reaction) %>">
-    <%= render "reactions/reaction_button", post: post %> 
-      </turbo-frame>
+    <%= render "reactions/reaction_button", post: post %>
      
     <%= link_to "💬 Comment", post_path(post), data: { turbo_frame: "_top" }, class: "flex-1 py-2 text-center rounded-lg hover:bg-slate-700/50 text-slate-300 transition font-semibold text-sm" %> 
       

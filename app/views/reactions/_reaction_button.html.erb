@@ -1,9 +1,11 @@
 <%# Wrapper keeps the id that reactions/update_reactions replaces %>
 <div id="<%= dom_id(post, :reaction) %>" class="flex-1">
 <% if user_signed_in? %>
+  <%# The user's one reaction on this post, from the loaded reactions %>
+  <% my_reaction = post.reactions.find { |r| r.user_id == current_user.id } %>
   <div class="relative group flex-1" style="position: relative;">
-    <button type="button" class="w-full py-2 px-3 text-center rounded-lg hover:bg-slate-700/50 text-slate-300 transition font-semibold text-sm bg-transparent border-0 cursor-pointer active:bg-slate-600">
-      😊 React
+    <button type="button" class="w-full py-2 px-3 text-center rounded-lg hover:bg-slate-700/50 <%= my_reaction ? "text-purple-300" : "text-slate-300" %> transition font-semibold text-sm bg-transparent border-0 cursor-pointer active:bg-slate-600">
+      <%= my_reaction ? "#{my_reaction.reaction_type} Reacted" : "😊 React" %>
     </button>
 
     <!-- Reaction Picker (Hidden by default) -->
@@ -13,7 +15,8 @@
         method: :post,
         params: { reaction: { reaction_type: emoji } },
         data: {turbo_stream: true},
-        class: "inline-block px-2 py-1 hover:bg-slate-800/50 rounded text-lg bg-transparent border-0 cursor-pointer" %>
+        title: my_reaction&.reaction_type == emoji ? "Remove reaction" : nil,
+        class: "inline-block px-2 py-1 hover:bg-slate-800/50 rounded text-lg border-0 cursor-pointer #{my_reaction&.reaction_type == emoji ? "bg-purple-600/40" : "bg-transparent"}" %>
         
       <% end %>
     </div>

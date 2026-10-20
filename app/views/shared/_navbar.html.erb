@@ -63,7 +63,7 @@
               <% if current_user.profile %>
                 <%= link_to "View Profile", profile_path(current_user.profile.username), class: "block w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-slate-800/50 rounded transition" %>
                 <%= link_to "Edit Profile", edit_profile_path(current_user.profile.username), class: "block w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-slate-800/50 rounded transition" %>
-                <%= link_to "My Posts", posts_path, class: "block w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-slate-800/50 rounded transition" %>
+                <%= link_to "My Posts", profile_path(current_user.profile.username), class: "block w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-slate-800/50 rounded transition" %>
                 <%= link_to "My Drafts", drafts_posts_path, class: "block w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-slate-800/50 rounded transition" %>
               <% else %>
                 <p class="block w-full text-left px-4 py-2 text-sm text-slate-500">Profile setup required</p>

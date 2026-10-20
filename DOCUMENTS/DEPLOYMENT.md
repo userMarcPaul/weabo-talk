@@ -49,8 +49,15 @@ connection is IPv6-only, and Render connects over IPv4.
 
 ## 2. Email (SMTP)
 
-Sign-up needs email confirmation, so production needs a working SMTP server.
-With Gmail:
+Email confirmation is **off** by default: new users can sign in right after signing up,
+and no confirmation email is sent. To require it, set `REQUIRE_EMAIL_CONFIRMATION=true`
+once email sending works. Password reset emails still need SMTP.
+
+Render's free tier blocks outgoing SMTP on ports 25, 465 and 587. Use a provider that
+accepts port 2525, such as Brevo (`smtp-relay.brevo.com`, port `2525`, login
+`xxxx@smtp-brevo.com`, the full `xsmtpsib-...` SMTP key as the password).
+
+With Gmail (paid Render plans only, because of the port block):
 
 | Variable | Value |
 |---|---|
@@ -95,6 +102,7 @@ not needed: the app doesn't read encrypted credentials.
 | `SUPABASE_S3_BUCKET` | yes | Your bucket name, e.g. `uploads` |
 | `SUPABASE_S3_ACCESS_KEY_ID` | yes | Supabase S3 Access Keys (1.3) |
 | `SUPABASE_S3_SECRET_ACCESS_KEY` | yes | Supabase S3 Access Keys (1.3) |
+| `REQUIRE_EMAIL_CONFIRMATION` | no | `true` to require email confirmation; off when unset (section 2) |
 | `SMTP_ADDRESS`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD` | yes | Section 2 |
 | `MAIL_FROM` | yes | Section 2 |
 | `RAILS_LOG_LEVEL` | no | `info` by default; `debug` for troubleshooting |
@@ -122,6 +130,6 @@ not needed: the app doesn't read encrypted credentials.
 | `prepared statement "a1" already exists` | You're using the Transaction pooler (port `6543`). Switch to the Session pooler, or set `DB_PREPARED_STATEMENTS=false`. |
 | Database connection times out | You're probably using the direct connection (IPv6). Use the Session pooler string. |
 | Image upload fails with a checksum or signature error | Check that all `SUPABASE_S3_*` values are correct, and that the endpoint ends in `/storage/v1/s3`. |
-| Confirmation emails don't arrive | Check the Render logs. Delivery errors are raised there. With Gmail, use an App Password. |
+| Emails don't arrive | Check the Render logs. Delivery errors are raised there. On Render's free tier, use port `2525` (section 2). |
 | Email links point to the wrong site | Set `APP_HOST` to your Render URL without `https://`. |
 | Health check fails | Make sure `HTTP_PORT` and `PORT` are both `10000`. |

@@ -26,9 +26,28 @@ class User < ApplicationRecord
   # Callbacks
   after_create :create_profile
 
+  # Email confirmation is off unless REQUIRE_EMAIL_CONFIRMATION=true (e.g. while the app
+  # can't send email). When off, new users can sign in right away and no email is sent.
+  def self.email_confirmation_required?
+    ENV["REQUIRE_EMAIL_CONFIRMATION"] == "true"
+  end
+
   # Use custom mailer for sending emails
   def send_devise_notification(notification, *args)
     devise_mailer.send(notification, self, *args).deliver_later
+  end
+
+  protected
+
+  # Devise checks this before generating a token, sending the confirmation email and
+  # signing in, so it switches all three
+  def confirmation_required?
+    self.class.email_confirmation_required? && super
+  end
+
+  # Email changes apply right away instead of waiting for a confirmation email
+  def postpone_email_change?
+    self.class.email_confirmation_required? && super
   end
 
   private

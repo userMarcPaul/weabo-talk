@@ -22,7 +22,8 @@ module Users
     # normalization (case, whitespace).
     def check_unconfirmed_account
       user = User.find_for_authentication(email: sign_in_params[:email])
-      if user && !user.confirmed? && user.valid_password?(sign_in_params[:password])
+      if user && user.inactive_message == :unconfirmed && !user.active_for_authentication? &&
+         user.valid_password?(sign_in_params[:password])
         flash.alert = "⚠️ Please confirm your email first. Check your inbox for the confirmation email, or click below to resend it."
         redirect_to new_user_confirmation_path(email: user.email)
       end
