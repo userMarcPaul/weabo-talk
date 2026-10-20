@@ -7,6 +7,8 @@ import FriendButtonController from "./friend_button_controller"
 import FormValidationController from "./form_validation_controller"
 import PostFormValidationController from "./post_form_validation_controller"
 import UserSearchController from "./user_search_controller"
+import FlashController from "./flash_controller"
+import DropdownController from "./dropdown_controller"
 
 const application = Application.start()
 
@@ -18,5 +20,7 @@ application.register("form-validation", FormValidationController)
 application.register("friend-button", FriendButtonController)
 application.register("post-form-validation", PostFormValidationController)
 application.register("user-search", UserSearchController)
+application.register("flash", FlashController)
+application.register("dropdown", DropdownController)
 
 export { application }

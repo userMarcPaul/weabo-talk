@@ -8,7 +8,7 @@
     <%# Click the total to open the reactions card. Its list loads when the card opens
         (lazy frame inside a closed <details>), so the feed doesn't load every reactor. %>
     <%# Phones: the card spans the counts row; wider screens: under "N reactions" %>
-    <details class="sm:relative">
+    <details class="sm:relative" data-controller="dropdown">
       <summary class="cursor-pointer list-none hover:text-purple-300 transition">
         <strong class="text-slate-200"><%= post.reactions.size %></strong> reactions
       </summary>
