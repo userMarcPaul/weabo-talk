@@ -176,6 +176,30 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     assert_select "summary[aria-label=?]", "Post options", count: 0
   end
 
+  # Images
+  test "uploaded post image should be stored as WebP and shown as a smaller version" do
+    sign_in @author
+
+    post posts_path, params: { post: { title: "Big photo", content: "Look", post_images_attributes: { "0" => { image: image_upload_param(width: 3000, height: 2000) } } } }
+
+    image = Post.find_by!(title: "Big photo").post_images.first.image
+    assert_equal "image/webp", image.content_type
+    assert_equal [ 1600, 1067 ], image.blob.open { |file| image_dimensions(file) }
+
+    get post_path(image.record.post)
+    assert_select "img[alt='Post image'][src*='/rails/active_storage/representations/']"
+  end
+
+  test "GIF post image should be shown as uploaded so it keeps animating" do
+    published = @author.posts.create!(title: "Animated", content: "Gif")
+    published.post_images.create!(image: { io: StringIO.new(Base64.decode64("R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7")), filename: "a.gif", content_type: "image/gif" })
+    sign_in @author
+
+    get post_path(published)
+
+    assert_select "img[alt='Post image'][src*='/rails/active_storage/blobs/']"
+  end
+
   # Feed
   test "comment button in the feed should open the post page, not load inside its frame" do
     @author.posts.create!(title: "Frieren is peak", content: "Agree?")

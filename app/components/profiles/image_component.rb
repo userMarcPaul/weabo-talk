@@ -27,8 +27,9 @@ module Profiles
       end
     end
 
+    # Smaller WebP version of the avatar (see ResizableImage)
     def avatar_url
-      user&.profile&.avatar&.attached? ? user.profile.avatar : nil
+      user&.profile&.avatar&.attached? ? user.profile.avatar_for_display : nil
     end
 
     def initials

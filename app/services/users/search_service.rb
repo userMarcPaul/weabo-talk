@@ -62,9 +62,14 @@ module Users
       end
     end
 
-    # Relative path, so no host configuration is needed
+    # Relative path, so no host configuration is needed. Smaller WebP version (see ResizableImage);
+    # GIFs are the original file.
     def generate_avatar_url(profile)
-      Rails.application.routes.url_helpers.rails_blob_path(profile.avatar, only_path: true)
+      avatar = profile.avatar_for_display
+      url_helpers = Rails.application.routes.url_helpers
+      return url_helpers.rails_representation_path(avatar, only_path: true) if avatar.respond_to?(:variation)
+
+      url_helpers.rails_blob_path(avatar, only_path: true)
     end
   end
 end

@@ -2,7 +2,7 @@
   <div class="flex-1">
     <% if form.object.persisted? && form.object.image.attached? %>
       <%# Existing image: show it; "Remove" marks it for deletion (_destroy) %>
-      <%= image_tag form.object.image, alt: "Post image", class: "h-20 rounded-lg object-cover border border-slate-600/50" %>
+      <%= image_tag form.object.image_for_display, alt: "Post image", class: "h-20 rounded-lg object-cover border border-slate-600/50" %>
     <% else %>
       <%= form.file_field :image, accept: "image/*", class: "w-full bg-slate-800/50 border border-slate-600/50 rounded-lg px-3 py-2 text-slate-100 file:mr-4 file:py-2 file:px-3 file:rounded file:border-0 file:bg-purple-600 file:text-white file:font-semibold file:cursor-pointer hover:file:bg-purple-700" %>
     <% end %>
