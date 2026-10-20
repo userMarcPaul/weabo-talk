@@ -2,14 +2,13 @@
   <%= render Posts::HeaderComponent.new(post: post, current_user: current_user) %>
   <div class="mb-4">
     <% if post.title.present? %>
-      <h3 class="text-xl font-bold text-slate-100 mb-2">
+      <h3 class="text-xl font-bold text-slate-100 mb-2 break-words">
         <%= link_to post.title, post_path(post), class: "hover:text-purple-400 transition" %>
       </h3>
     <% end %>
     <%= link_to post_path(post) do%>
-    <p class="text-slate-300 leading-relaxed whitespace-pre-wrap">
-      <%= post.content %>
-    </p>
+    <%# Content on one line: whitespace-pre-wrap would show the template's indentation %>
+    <p class="text-slate-300 leading-relaxed whitespace-pre-wrap break-words"><%= post.content %></p>
     <% end %>
   </div>
 

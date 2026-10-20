@@ -40,11 +40,11 @@
           </div>
 
           <!-- User Info -->
-          <div class="flex-1 pt-2">
+          <div class="flex-1 min-w-0 pt-2">
             <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
-              <div>
-                <h1 class="text-4xl md:text-5xl font-black bg-linear-to-r from-purple-300 via-pink-300 to-indigo-300 bg-clip-text text-transparent"><%= @profile.username %></h1>
-                <p class="text-purple-300/70 mt-2 text-lg">@<%= @profile.username %></p>
+              <div class="min-w-0">
+                <h1 class="text-4xl md:text-5xl font-black break-words bg-linear-to-r from-purple-300 via-pink-300 to-indigo-300 bg-clip-text text-transparent"><%= @profile.username %></h1>
+                <p class="text-purple-300/70 mt-2 text-lg break-words">@<%= @profile.username %></p>
               </div>
               
               <!-- Edit Profile Button (only for own profile) -->
