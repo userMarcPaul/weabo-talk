@@ -13,7 +13,7 @@
         <span><%= time_ago_in_words(comment.created_at) %> ago</span>
         <button class="text-slate-400 hover:text-slate-300 transition" data-action="click->comment-form#toggleReplyForm" data-comment-id="<%= comment.id %>">Reply</button>
         <% if current_user&.id == comment.user_id %>
-          <%= button_to "Delete", post_comment_path(post, comment), method: :delete, form: { data: { turbo_confirm: "Delete this comment?" } }, class: "text-rose-400 hover:text-rose-300 transition bg-transparent border-0 p-0 cursor-pointer" %>
+          <%= button_to "Delete", post_comment_path(post, comment), method: :delete, form: { data: { turbo_confirm: "Delete this comment?", confirm_details: "Its replies will be deleted too. This can't be undone.", confirm_button: "Delete" } }, class: "text-rose-400 hover:text-rose-300 transition bg-transparent border-0 p-0 cursor-pointer" %>
         <% end %>
       </div>
 
