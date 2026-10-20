@@ -1,9 +1,10 @@
 <!-- Real-time User Search Box Component -->
+<%# Stimulus values are read from data-<controller>-<name>-value attributes %>
 <div 
   data-controller="user-search" 
-  data-user-search-url="<%= search_users_path %>"
-  data-user-search-min-length="1"
-  data-user-search-debounce-delay="300"
+  data-user-search-search-url-value="<%= search_users_path %>"
+  data-user-search-min-length-value="1"
+  data-user-search-debounce-delay-value="300"
   class="flex-1 max-w-lg relative z-40"
 >
   <!-- Search Input Container -->
@@ -51,10 +52,10 @@
     </button>
   </div>
 
-  <!-- Search Results Dropdown -->
+  <!-- Search Results Dropdown (solid: backdrop-blur doesn't work inside the navbar's own) -->
   <div 
     data-user-search-target="results"
-    class="absolute top-full left-0 right-0 mt-2 bg-slate-900/95 backdrop-blur-md border border-slate-700/50 rounded-lg shadow-xl z-50 overflow-hidden hidden"
+    class="absolute top-full left-0 right-0 mt-2 bg-slate-900 border border-slate-700/50 rounded-lg shadow-xl z-50 overflow-hidden hidden"
     style="max-height: 24rem; overflow-y: auto;"
   >
     <!-- Results will be dynamically populated here -->

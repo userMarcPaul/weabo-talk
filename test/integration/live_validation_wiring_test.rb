@@ -28,4 +28,12 @@ class LiveValidationWiringTest < ActionDispatch::IntegrationTest
     get edit_profile_path(user.profile.username)
     assert_select VALIDATED_FORM, validate_form_path, count: 1
   end
+
+  test "navbar user search should pass the search url" do
+    sign_in User.create!(email: "finder@example.com", password: "password123", password_confirmation: "password123").tap(&:confirm)
+
+    get root_path
+
+    assert_select "[data-controller=user-search][data-user-search-search-url-value=?]", search_users_path
+  end
 end
