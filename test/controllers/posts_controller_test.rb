@@ -175,6 +175,32 @@ class PostsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 1, count_queries.size, count_queries.join("\n")
   end
 
+  test "post content should not start with the template's whitespace" do
+    @author.posts.create!(title: "Frieren is peak", content: "Agree?")
+    sign_in @author
+
+    get root_path
+
+    # The content is shown with whitespace-pre-wrap, so any whitespace around it is visible
+    assert_match %r{whitespace-pre-wrap[^"]*">Agree\?</p>}, response.body
+  end
+
+  test "navbar should have one profile menu with the navigation links and one live badge" do
+    sign_in @author
+
+    get root_path
+
+    # The badge id is the broadcast target, so it must not be duplicated
+    assert_select "#notifications-badge", count: 1
+    assert_select "nav details", count: 1 do
+      assert_select "summary[aria-label=?]", "Profile menu"
+      # Navigation for smaller screens (wide screens have it in the bar)
+      assert_select "a[href=?]", home_path, text: "Feed"
+      assert_select "a[href=?]", friendships_path, text: "My Friends"
+      assert_select "button", text: "Sign Out", count: 1
+    end
+  end
+
   test "my posts link should open the user's own profile" do
     sign_in @author
 

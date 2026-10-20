@@ -1,14 +1,12 @@
 <div id="comment-<%= comment.id %>" class="mb-4" data-controller="comment-form">
   <div class="flex gap-3">
     <%= render Profiles::ImageComponent.new(user: comment.user, size: "sm") %>
-    <div class="flex-1">
+    <div class="flex-1 min-w-0">
       <div class="bg-slate-700/50 rounded-lg px-4 py-3">
         <p class="font-semibold text-slate-200 text-sm">
           <%= link_to comment.user.profile&.username || comment.user.email, profile_path(comment.user.profile&.username), class: "hover:text-purple-400 transition" %>
         </p>
-        <p class="text-slate-300 text-sm mt-1 whitespace-pre-wrap">
-          <%= link_to_user_mentions(comment.content) %>
-        </p>
+        <div class="text-slate-300 text-sm mt-1 break-words"><%= link_to_user_mentions(comment.content) %></div>
       </div>
 
       <div class="flex gap-4 mt-2 text-xs text-slate-400">
