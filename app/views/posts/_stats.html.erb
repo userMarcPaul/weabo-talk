@@ -2,6 +2,12 @@
     replace this after each change, so the counts update without reloading the page. %>
 <div id="<%= dom_id(post, :stats) %>" class="flex gap-4 text-sm text-slate-400 mb-4 py-3 border-y border-slate-700/30">
   <span><strong class="text-slate-200"><%= post.likes.size %></strong> likes</span>
-  <span><strong class="text-slate-200"><%= post.reactions.size %></strong> reactions</span>
+  <span>
+    <%# Which emojis the post got, most used first %>
+    <% post.reactions.group_by(&:reaction_type).sort_by { |_, reactions| -reactions.size }.each do |emoji, reactions| %>
+      <span title="<%= pluralize(reactions.size, "reaction") %>"><%= emoji %><span class="text-slate-300"><%= reactions.size %></span></span>
+    <% end %>
+    <strong class="text-slate-200"><%= post.reactions.size %></strong> reactions
+  </span>
   <span><strong class="text-slate-200"><%= post.comments.size %></strong> comments</span>
 </div>

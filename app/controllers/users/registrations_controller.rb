@@ -59,9 +59,9 @@ module Users
 
     protected
 
+    # Only used when the user is signed in right away (email confirmation is off)
     def after_sign_up_path_for(resource)
-      # Redirect to confirmation pending page instead of root
-      new_user_confirmation_path
+      root_path
     end
 
     def after_inactive_sign_up_path_for(resource)

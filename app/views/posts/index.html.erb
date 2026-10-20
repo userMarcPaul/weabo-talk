@@ -21,7 +21,8 @@
         </div>
 
         <!-- Posts Feed Container -->
-        <turbo-frame id="posts-feed">
+        <%# target _top: links in the list (post titles, authors, pagination) open as normal pages %>
+        <turbo-frame id="posts-feed" target="_top">
           <% if @posts&.any? %>
             <% @posts.each do |post| %>
               <%= render "posts/post", post: post %>

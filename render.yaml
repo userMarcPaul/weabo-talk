@@ -41,6 +41,9 @@ services:
       - key: SUPABASE_S3_SECRET_ACCESS_KEY
         sync: false
 
+      # Email confirmation is off unless this is "true" (turn it on once email works)
+      - key: REQUIRE_EMAIL_CONFIRMATION
+        value: "false"
       # Email (SMTP)
       - key: SMTP_ADDRESS
         sync: false

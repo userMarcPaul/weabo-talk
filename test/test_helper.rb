@@ -13,5 +13,14 @@ module ActiveSupport
     fixtures :all
 
     # Add more helper methods to be used by all tests here...
+
+    # Email confirmation is off unless REQUIRE_EMAIL_CONFIRMATION=true (see User)
+    def with_email_confirmation_required
+      previous = ENV["REQUIRE_EMAIL_CONFIRMATION"]
+      ENV["REQUIRE_EMAIL_CONFIRMATION"] = "true"
+      yield
+    ensure
+      ENV["REQUIRE_EMAIL_CONFIRMATION"] = previous
+    end
   end
 end

@@ -31,6 +31,16 @@ class ProfilesControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, @owner.email
   end
 
+  test "email verified badge should only be shown for confirmed accounts" do
+    unconfirmed = User.create!(email: "pending@example.com", password: "password123", password_confirmation: "password123")
+
+    get profile_path(@owner.profile.username)
+    assert_includes response.body, "<span>Email verified</span>"
+
+    get profile_path(unconfirmed.profile.username)
+    assert_not_includes response.body, "<span>Email verified</span>"
+  end
+
   # Update
   test "failed username change should keep the form on the saved username" do
     taken = create_user("taken@example.com").profile.username

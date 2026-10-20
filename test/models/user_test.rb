@@ -67,12 +67,33 @@ class UserTest < ActiveSupport::TestCase
 
   # Email Confirmation
   test "user should have confirmation token after creation" do
-    user = User.create!(
-      email: "confirm_test@example.com",
-      password: "password123",
-      password_confirmation: "password123"
-    )
-    assert_not_nil user.confirmation_token, "User has no confirmation token"
+    with_email_confirmation_required do
+      user = User.create!(
+        email: "confirm_test@example.com",
+        password: "password123",
+        password_confirmation: "password123"
+      )
+      assert_not_nil user.confirmation_token, "User has no confirmation token"
+    end
+  end
+
+  test "user should be able to sign in without confirming while confirmation is off" do
+    user = nil
+    assert_no_enqueued_emails do
+      user = User.create!(email: "no_confirm@example.com", password: "password123", password_confirmation: "password123")
+    end
+
+    assert_nil user.confirmation_token
+    assert user.active_for_authentication?
+  end
+
+  test "unconfirmed user should not be able to sign in while confirmation is required" do
+    with_email_confirmation_required do
+      user = User.create!(email: "must_confirm@example.com", password: "password123", password_confirmation: "password123")
+
+      assert_not user.active_for_authentication?
+      assert_equal :unconfirmed, user.inactive_message
+    end
   end
 
   test "user should not be confirmed upon creation" do

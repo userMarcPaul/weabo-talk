@@ -5,14 +5,19 @@ class ReactionsController < ApplicationController
   before_action :set_post
 
   # POST /posts/:post_id/reactions
+  # One reaction per user: the same emoji again removes it, another emoji switches it
   def create
-    existing = @post.reactions.find_by(user: current_user, reaction_type: reaction_params[:reaction_type])
+    reaction_type = reaction_params[:reaction_type]
+    existing = @post.reactions.find_by(user: current_user)
 
-    if existing
+    if existing&.reaction_type == reaction_type
       existing.destroy
       @reaction = nil
+    elsif existing
+      existing.update(reaction_type: reaction_type)
+      @reaction = existing
     else
-      @reaction = @post.reactions.create(user: current_user, reaction_type: reaction_params[:reaction_type])
+      @reaction = @post.reactions.create(user: current_user, reaction_type: reaction_type)
     end
 
     respond_to do |format|
