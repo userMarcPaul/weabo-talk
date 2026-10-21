@@ -54,6 +54,9 @@ Rails.application.routes.draw do
   get "friendships", to: "follows#mine"
   get "friend-requests", to: "follows#mine"
 
+  # Messages (under construction)
+  get "messages", to: "messages#index", as: :messages
+
   # Notifications
   resources :notifications, only: [ :index, :destroy ]
   patch "notifications/:id/mark-as-read", to: "notifications#mark_as_read", as: :mark_notification_as_read

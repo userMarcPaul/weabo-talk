@@ -20,15 +20,10 @@
     <!-- Navigation Links & User Menu -->
     <div class="flex items-center gap-2 lg:gap-4">
       <% if user_signed_in? %>
-        <% username = current_user.profile&.username %>
-
         <!-- Quick Links (wide screens; smaller screens have them in the profile menu) -->
         <div class="hidden lg:flex items-center space-x-3">
           <%= link_to "Feed", home_path, class: "px-3 py-2 text-slate-300 hover:text-purple-400 transition font-semibold text-sm whitespace-nowrap" %>
-          <% if username %>
-            <%= link_to "Following", profile_following_path(username), class: "px-3 py-2 text-slate-300 hover:text-purple-400 transition font-semibold text-sm whitespace-nowrap" %>
-            <%= link_to "Followers", profile_followers_path(username), class: "px-3 py-2 text-slate-300 hover:text-purple-400 transition font-semibold text-sm whitespace-nowrap" %>
-          <% end %>
+          <%= link_to "Messages", messages_path, class: "px-3 py-2 text-slate-300 hover:text-purple-400 transition font-semibold text-sm whitespace-nowrap" %>
         </div>
 
         <%# Notifications stay visible at every size: the live badge has one id (broadcast target) %>
@@ -67,10 +62,7 @@
             <!-- Navigation (in the bar on wide screens) -->
             <div class="lg:hidden px-2 py-2 border-b border-slate-700/30">
               <%= link_to "Feed", home_path, class: "block w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-slate-800/50 rounded transition" %>
-              <% if username %>
-                <%= link_to "Following", profile_following_path(username), class: "block w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-slate-800/50 rounded transition" %>
-                <%= link_to "Followers", profile_followers_path(username), class: "block w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-slate-800/50 rounded transition" %>
-              <% end %>
+              <%= link_to "Messages", messages_path, class: "block w-full text-left px-4 py-2 text-sm text-slate-300 hover:bg-slate-800/50 rounded transition" %>
             </div>
 
             <!-- Profile & Settings Links -->
